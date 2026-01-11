@@ -1,0 +1,31 @@
+{
+  "name": "starlight-announcement",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "A plugin to add custom announcement to your Starlight docs.",
+  "author": "frostybee",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "devDependencies": {
+    "@astrojs/starlight": "^0.37.2",
+    "astro": "^5.16.8"
+  },
+  "peerDependencies": {
+    "@astrojs/starlight": ">=0.37"
+  },
+  "engines": {
+    "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/frostybee/starlight-announcement",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frostybee/starlight-announcement.git",
+    "directory": "packages/starlight-announcement"
+  },
+  "bugs": "https://github.com/frostybee/starlight-announcement/issues"
+}

@@ -24,10 +24,17 @@ importers:
         version: link:../packages/starlight-announcement
 
   packages/starlight-announcement:
+    dependencies:
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.3
     devDependencies:
       '@astrojs/starlight':
         specifier: ^0.37.2
         version: 0.37.2(astro@5.16.8(rollup@4.55.1)(typescript@5.9.3))
+      '@types/picomatch':
+        specifier: ^3.0.1
+        version: 3.0.2
       astro:
         specifier: ^5.16.8
         version: 5.16.8(rollup@4.55.1)(typescript@5.9.3)
@@ -628,6 +635,9 @@ packages:
 
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+
+  '@types/picomatch@3.0.2':
+    resolution: {integrity: sha512-n0i8TD3UDB7paoMMxA3Y65vUncFJXjcUf7lQY7YyKGl6031FNjfsLs6pdLFCy2GNFxItPJG8GvvpbZc2skH7WA==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -2351,6 +2361,8 @@ snapshots:
       '@types/unist': 3.0.3
 
   '@types/node@17.0.45': {}
+
+  '@types/picomatch@3.0.2': {}
 
   '@types/sax@1.2.7':
     dependencies:

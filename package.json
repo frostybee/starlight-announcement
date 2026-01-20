@@ -8,8 +8,15 @@
   "engines": {
     "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
   },
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@10.26.0",
   "private": true,
+  "scripts": {
+    "build": "pnpm -F starlight-announcement build",
+    "build:docs": "pnpm -F starlight-announcement-docs build",
+    "start:docs": "pnpm -F starlight-announcement-docs start",
+    "ci-version": "changeset version && pnpm install --no-frozen-lockfile",
+    "ci-publish": "pnpm build && changeset publish"
+  },
   "homepage": "https://github.com/frostybee/starlight-announcement",
   "repository": {
     "type": "git",

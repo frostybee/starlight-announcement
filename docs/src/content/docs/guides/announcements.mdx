@@ -1,0 +1,275 @@
+---
+title: Announcement Options
+description: Configure individual announcements with variants, scheduling, and page targeting
+---
+
+Each announcement in the `announcements` array can be configured with the following options.
+
+## Required Properties
+
+### `id`
+
+- **Type:** `string`
+- **Required:** Yes
+
+A unique identifier for the announcement. This is used to track dismissals in localStorage, so changing an announcement's `id` will cause it to appear again for users who dismissed it.
+
+```js
+{
+  id: 'v2-release-notice',
+  content: 'Version 2.0 is now available!',
+}
+```
+
+:::caution
+Choose meaningful, stable IDs. If you change an ID, all users will see the announcement again, even if they previously dismissed it.
+:::
+
+### `content`
+
+- **Type:** `string`
+- **Required:** Yes
+
+The announcement text. Supports HTML for simple formatting.
+
+```js
+{
+  id: 'example',
+  content: 'Check out our <strong>new features</strong>!',
+}
+```
+
+## Visual Options
+
+### `variant`
+
+- **Type:** `'note' | 'tip' | 'caution' | 'danger'`
+- **Default:** `'note'`
+
+The visual style of the announcement. These match Starlight's [aside styles](https://starlight.astro.build/guides/authoring-content/#asides).
+
+| Variant | Color | Use Case |
+|---------|-------|----------|
+| `note` | Blue | General information, updates |
+| `tip` | Green | Positive news, helpful tips |
+| `caution` | Orange | Warnings, deprecation notices |
+| `danger` | Red | Critical alerts, breaking changes |
+
+```js
+// Information announcement
+{
+  id: 'info',
+  content: 'Documentation has been updated.',
+  variant: 'note',
+}
+
+// Success/positive announcement
+{
+  id: 'release',
+  content: 'New version released!',
+  variant: 'tip',
+}
+
+// Warning announcement
+{
+  id: 'deprecation',
+  content: 'This API will be deprecated in v3.',
+  variant: 'caution',
+}
+
+// Critical announcement
+{
+  id: 'security',
+  content: 'Security update required!',
+  variant: 'danger',
+}
+```
+
+### `link`
+
+- **Type:** `{ text: string; href: string }`
+- **Default:** `undefined`
+
+An optional call-to-action link displayed next to the announcement content.
+
+```js
+{
+  id: 'migration',
+  content: 'v3.0 includes breaking changes.',
+  variant: 'caution',
+  link: {
+    text: 'Migration Guide',
+    href: '/guides/migration',
+  },
+}
+```
+
+### `dismissible`
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Whether the announcement can be dismissed by users. When `true`, a close button is shown and the dismissed state is saved to localStorage.
+
+```js
+// Non-dismissible critical announcement
+{
+  id: 'outage',
+  content: 'Service maintenance in progress.',
+  variant: 'danger',
+  dismissible: false,
+}
+```
+
+## Scheduling Options
+
+### `startDate`
+
+- **Type:** `string` (ISO 8601 date)
+- **Default:** `undefined`
+
+The date when the announcement should start appearing. The announcement won't be visible before this date.
+
+```js
+{
+  id: 'conference',
+  content: 'Join us at the developer conference!',
+  startDate: '2025-03-01',
+}
+```
+
+### `endDate`
+
+- **Type:** `string` (ISO 8601 date)
+- **Default:** `undefined`
+
+The date when the announcement should stop appearing. The announcement is hidden after this date (end of day, inclusive).
+
+```js
+{
+  id: 'sale',
+  content: 'Holiday sale - 50% off!',
+  startDate: '2025-12-20',
+  endDate: '2025-12-31',
+}
+```
+
+:::tip
+Combine `startDate` and `endDate` for time-limited announcements like events, sales, or maintenance windows.
+:::
+
+## Page Targeting
+
+### `showOn`
+
+- **Type:** `string[]`
+- **Default:** `['/**']`
+
+Glob patterns specifying which pages should show the announcement. By default, announcements appear on all pages.
+
+```js
+// Only show on the homepage
+{
+  id: 'welcome',
+  content: 'Welcome to our docs!',
+  showOn: ['/'],
+}
+
+// Show on all guide pages
+{
+  id: 'guide-tip',
+  content: 'Check out our video tutorials!',
+  showOn: ['/guides/**'],
+}
+
+// Show on specific pages
+{
+  id: 'api-update',
+  content: 'API documentation has been updated.',
+  showOn: ['/api/**', '/reference/**'],
+}
+```
+
+### `hideOn`
+
+- **Type:** `string[]`
+- **Default:** `[]`
+
+Glob patterns specifying which pages should NOT show the announcement. Takes precedence over `showOn`.
+
+```js
+// Show everywhere except API reference
+{
+  id: 'tutorial',
+  content: 'New tutorial available!',
+  showOn: ['/**'],
+  hideOn: ['/api/**'],
+}
+
+// Show on guides except the advanced section
+{
+  id: 'beginner-tip',
+  content: 'New to the framework? Start here!',
+  showOn: ['/guides/**'],
+  hideOn: ['/guides/advanced/**'],
+}
+```
+
+### Glob Pattern Examples
+
+| Pattern | Matches |
+|---------|---------|
+| `/` | Homepage only |
+| `/**` | All pages |
+| `/guides/**` | All pages under `/guides/` |
+| `/api/*` | Direct children of `/api/` (not nested) |
+| `/docs/v2/**` | All pages under `/docs/v2/` |
+
+## Complete Example
+
+```js
+starlightAnnouncement({
+  announcements: [
+    // Time-limited event announcement
+    {
+      id: 'conference-2025',
+      content: 'Join us at DevCon 2025!',
+      variant: 'tip',
+      link: {
+        text: 'Register Now',
+        href: 'https://devcon.example.com',
+      },
+      startDate: '2025-02-01',
+      endDate: '2025-03-15',
+    },
+
+    // API deprecation warning (only on API pages)
+    {
+      id: 'v1-deprecation',
+      content: 'API v1 will be deprecated on June 1st.',
+      variant: 'caution',
+      link: {
+        text: 'Upgrade Guide',
+        href: '/guides/v2-migration',
+      },
+      showOn: ['/api/v1/**'],
+      endDate: '2025-06-01',
+    },
+
+    // Non-dismissible maintenance notice
+    {
+      id: 'maintenance',
+      content: 'Scheduled maintenance: Jan 15, 2am-4am UTC',
+      variant: 'danger',
+      dismissible: false,
+      startDate: '2025-01-14',
+      endDate: '2025-01-15',
+    },
+  ],
+})
+```
+
+## Next Steps
+
+- [Display Modes](/guides/display-modes/) - Control how multiple announcements are shown
+- [Configuration](/guides/configuration/) - All plugin configuration options

@@ -1,21 +1,33 @@
-import type { StarlightPlugin } from '@astrojs/starlight/types'
+import type { StarlightPlugin } from '@astrojs/starlight/types';
+import { pluginConfigSchema, type StarlightAnnouncementConfig } from './src/schemas/config';
+import { createAnnouncementIntegration } from './src/libs/integration';
+import { translations } from './src/translations';
 
-export default function starlightAnnouncement(): StarlightPlugin {
+export type { StarlightAnnouncementConfig, AnnouncementConfig, PluginConfig } from './src/schemas/config';
+
+export default function starlightAnnouncement(
+  userConfig?: StarlightAnnouncementConfig
+): StarlightPlugin {
+  const config = pluginConfigSchema.parse(userConfig ?? {});
+
   return {
     name: 'starlight-announcement',
     hooks: {
-      'config:setup'({ logger }) {
-        /**
-         * This is the entry point of your Starlight plugin.
-         * The `config:setup` hook is called when Starlight is initialized (during the Astro `astro:config:setup`
-         * integration hook).
-         * To learn more about the Starlight plugin API and all available options in this hook, check the Starlight
-         * plugins reference.
-         *
-         * @see https://starlight.astro.build/reference/plugins/
-         */
-        logger.info('Hello from the starlight-announcement plugin!')
+      'i18n:setup': ({ injectTranslations }) => {
+        injectTranslations(translations);
+      },
+      'config:setup': ({ addIntegration, updateConfig, config: starlightConfig }) => {
+        // Override the Banner component with our announcement-aware version
+        updateConfig({
+          components: {
+            ...starlightConfig.components,
+            Banner: 'starlight-announcement/components/AnnouncementBanner.astro',
+          },
+        });
+
+        // Add our Astro integration for the Vite plugin
+        addIntegration(createAnnouncementIntegration(config));
       },
     },
-  }
+  };
 }

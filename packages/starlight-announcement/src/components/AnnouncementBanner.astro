@@ -1,0 +1,147 @@
+---
+import StarlightBanner from '@astrojs/starlight/components/Banner.astro';
+import { announcements, displayMode, rotateInterval } from 'virtual:starlight-announcement/config';
+import { getActiveAnnouncements } from '../libs/utils';
+import AnnouncementItem from './AnnouncementItem.astro';
+
+const pathname = Astro.url.pathname;
+let activeAnnouncements = getActiveAnnouncements(announcements, pathname);
+
+// Apply display mode filtering
+if (displayMode === 'first' && activeAnnouncements.length > 0) {
+  activeAnnouncements = [activeAnnouncements[0]];
+}
+
+const isRotateMode = displayMode === 'rotate' && activeAnnouncements.length > 1;
+---
+
+<!-- Inline script to hide dismissed announcements before render (prevents flash) -->
+<script is:inline data-starlight-announcement-init>
+  (function() {
+    try {
+      var dismissed = JSON.parse(localStorage.getItem('starlight-announcements-dismissed') || '[]');
+      if (dismissed.length) {
+        var style = document.createElement('style');
+        style.id = 'starlight-announcement-dismissed-styles';
+        style.textContent = dismissed.map(function(id) {
+          return '[data-announcement-id="' + id + '"] { display: none !important; }';
+        }).join('');
+        document.head.appendChild(style);
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<!-- Render original Starlight banner (frontmatter-based) -->
+<StarlightBanner {...Astro.props} />
+
+<!-- Render plugin announcements -->
+{activeAnnouncements.length > 0 && (
+  <div
+    class="sl-announcements-container"
+    data-display-mode={displayMode}
+    data-announcement-rotate={isRotateMode ? '' : undefined}
+    data-rotate-interval={isRotateMode ? rotateInterval : undefined}
+  >
+    {activeAnnouncements.map((ann) => (
+      <AnnouncementItem announcement={ann} />
+    ))}
+  </div>
+)}
+
+<script>
+  const STORAGE_KEY = 'starlight-announcements-dismissed';
+
+  function getDismissed(): string[] {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function dismiss(id: string) {
+    const dismissed = getDismissed();
+    if (!dismissed.includes(id)) {
+      dismissed.push(id);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissed));
+      } catch {
+        // localStorage may be full or disabled
+      }
+    }
+  }
+
+  function ensureDismissedStyles() {
+    const dismissed = getDismissed();
+    if (!dismissed.length) return;
+
+    // Ensure the stylesheet exists (needed after view transitions)
+    let style = document.getElementById('starlight-announcement-dismissed-styles');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'starlight-announcement-dismissed-styles';
+      document.head.appendChild(style);
+    }
+    style.textContent = dismissed
+      .map((id) => `[data-announcement-id="${id}"] { display: none !important; }`)
+      .join('');
+  }
+
+  function initDismissals() {
+    ensureDismissedStyles();
+
+    // Attach dismiss button handlers
+    document.querySelectorAll<HTMLElement>('[data-dismiss-announcement]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.dismissAnnouncement;
+        if (id) {
+          dismiss(id);
+          ensureDismissedStyles(); // Update stylesheet to hide the dismissed announcement
+        }
+      });
+    });
+  }
+
+  function initRotation() {
+    const container = document.querySelector<HTMLElement>('[data-announcement-rotate]');
+    if (!container) return;
+
+    const items = container.querySelectorAll<HTMLElement>('.sl-announcement');
+    if (items.length <= 1) return;
+
+    const interval = parseInt(container.dataset.rotateInterval || '5000', 10);
+    let current = 0;
+
+    function showNext() {
+      items.forEach((item, i) => {
+        item.style.display = i === current ? '' : 'none';
+      });
+      current = (current + 1) % items.length;
+    }
+
+    showNext();
+    setInterval(showNext, interval);
+  }
+
+  // Initialize on page load
+  initDismissals();
+  initRotation();
+
+  // Re-initialize on Astro view transitions
+  document.addEventListener('astro:page-load', () => {
+    initDismissals();
+    initRotation();
+  });
+</script>
+
+<style>
+  .sl-announcements-container {
+    display: contents;
+  }
+
+  .sl-announcements-container[data-announcement-rotate] {
+    display: block;
+  }
+</style>

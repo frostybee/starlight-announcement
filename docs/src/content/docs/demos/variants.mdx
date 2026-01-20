@@ -1,0 +1,71 @@
+---
+title: Variants Demo
+description: Live demo of all announcement visual variants
+---
+
+This page demonstrates all four announcement variants. Look at the top of the page to see each variant in action.
+
+## Variants Displayed
+
+The announcements at the top of this page showcase:
+
+1. **Note** (Blue): General information and updates
+2. **Tip** (Green): Positive news and helpful tips
+3. **Caution** (Orange): Warnings and deprecation notices
+4. **Danger** (Red): Critical alerts and breaking changes
+
+## Configuration
+
+These announcements are configured with the `showOn` option targeting this specific page:
+
+```js
+starlightAnnouncement({
+  displayMode: 'stack',
+  announcements: [
+    {
+      id: 'demo-note',
+      content: 'This is a <strong>note</strong> variant - great for general information.',
+      variant: 'note',
+      showOn: ['/demos/variants/'],
+    },
+    {
+      id: 'demo-tip',
+      content: 'This is a <strong>tip</strong> variant - perfect for positive news!',
+      variant: 'tip',
+      showOn: ['/demos/variants/'],
+    },
+    {
+      id: 'demo-caution',
+      content: 'This is a <strong>caution</strong> variant - use for warnings.',
+      variant: 'caution',
+      showOn: ['/demos/variants/'],
+    },
+    {
+      id: 'demo-danger',
+      content: 'This is a <strong>danger</strong> variant - for critical alerts!',
+      variant: 'danger',
+      showOn: ['/demos/variants/'],
+    },
+  ],
+})
+```
+
+## Variant Colors
+
+The variants use Starlight's built-in color variables for consistency with the aside component:
+
+| Variant | Background | Border | Use Case |
+|---------|------------|--------|----------|
+| `note` | `--sl-color-blue-low` | `--sl-color-blue` | Information, updates |
+| `tip` | `--sl-color-green-low` | `--sl-color-green` | Success, tips |
+| `caution` | `--sl-color-orange-low` | `--sl-color-orange` | Warnings |
+| `danger` | `--sl-color-red-low` | `--sl-color-red` | Critical alerts |
+
+## Try It
+
+- **Dismiss** any announcement by clicking the X button
+- **Refresh** the page to see dismissed announcements again (after clearing localStorage)
+
+---
+
+See [Announcement Options](/guides/announcements/) for detailed documentation on variants.

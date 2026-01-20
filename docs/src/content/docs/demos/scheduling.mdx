@@ -1,0 +1,140 @@
+---
+title: Scheduling Demo
+description: Live demo of time-based announcement scheduling
+---
+
+This page demonstrates time-based scheduling with `startDate` and `endDate` options.
+
+## How Scheduling Works
+
+Announcements can be scheduled to appear only during specific date ranges:
+
+- **startDate:** Announcement won't appear before this date
+- **endDate:** Announcement won't appear after this date (end of day, inclusive)
+
+## Active Announcement
+
+The announcement at the top of this page is scheduled to be visible now (no date restrictions):
+
+```js
+{
+  id: 'demo-scheduling-active',
+  content: 'This announcement is currently active (no date restrictions).',
+  variant: 'tip',
+  showOn: ['/demos/scheduling/'],
+}
+```
+
+## Scheduling Examples
+
+### Future Announcement
+
+This announcement won't appear until 2030:
+
+```js
+{
+  id: 'future-announcement',
+  content: 'Coming in 2030!',
+  variant: 'note',
+  startDate: '2030-01-01',
+}
+```
+
+### Past Announcement
+
+This announcement expired in 2020:
+
+```js
+{
+  id: 'expired-announcement',
+  content: 'This offer has ended.',
+  variant: 'caution',
+  endDate: '2020-12-31',
+}
+```
+
+### Limited Time Window
+
+This announcement only shows during a specific period:
+
+```js
+{
+  id: 'limited-time',
+  content: 'Holiday sale - 50% off!',
+  variant: 'tip',
+  startDate: '2025-12-20',
+  endDate: '2025-12-31',
+}
+```
+
+## Date Format
+
+Dates use ISO 8601 format (`YYYY-MM-DD`):
+
+```js
+{
+  startDate: '2025-01-15',  // January 15, 2025
+  endDate: '2025-02-28',    // February 28, 2025 (end of day)
+}
+```
+
+## Use Cases
+
+| Scenario | Configuration |
+|----------|---------------|
+| **Product launch** | `startDate: '2025-03-01'` |
+| **Limited sale** | `startDate: '2025-12-20'`, `endDate: '2025-12-31'` |
+| **Deprecation notice** | `endDate: '2025-06-01'` (expires when deprecated) |
+| **Conference** | `startDate: '2025-09-01'`, `endDate: '2025-09-15'` |
+| **Maintenance** | `startDate: '2025-01-14'`, `endDate: '2025-01-15'` |
+
+## Complete Example
+
+```js
+starlightAnnouncement({
+  announcements: [
+    // Always visible
+    {
+      id: 'welcome',
+      content: 'Welcome to our docs!',
+      variant: 'tip',
+    },
+    // Only during Black Friday week
+    {
+      id: 'black-friday',
+      content: 'Black Friday sale - 40% off all plans!',
+      variant: 'tip',
+      link: { text: 'Shop Now', href: '/pricing' },
+      startDate: '2025-11-24',
+      endDate: '2025-11-30',
+    },
+    // Until API v1 is deprecated
+    {
+      id: 'v1-deprecation',
+      content: 'API v1 will be deprecated on March 1st.',
+      variant: 'caution',
+      link: { text: 'Migration Guide', href: '/guides/v2-migration' },
+      endDate: '2025-03-01',
+    },
+    // After new feature launches
+    {
+      id: 'new-feature',
+      content: 'New dashboard is now available!',
+      variant: 'note',
+      startDate: '2025-02-15',
+    },
+  ],
+})
+```
+
+## Testing Scheduled Announcements
+
+To test scheduled announcements during development:
+
+1. Set dates in the past/future temporarily
+2. Check the browser console for any date-related filtering
+3. Use your system clock to verify date boundaries
+
+---
+
+See [Announcement Options](/guides/announcements/) for detailed documentation on scheduling.

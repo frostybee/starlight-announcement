@@ -1,0 +1,159 @@
+---
+title: Plugin vs Built-in Banner
+description: Understanding the differences between starlight-announcement and Starlight's built-in Banner component
+---
+
+Starlight includes a built-in [Banner component](https://starlight.astro.build/reference/overrides/#banner) for displaying page-level announcements. This guide explains when to use the built-in Banner versus the `starlight-announcement` plugin.
+
+## Quick Comparison
+
+| Feature | Built-in Banner | starlight-announcement |
+|---------|-----------------|------------------------|
+| Configuration | Per-page frontmatter | Site-wide `astro.config.mjs` |
+| Dismissible | No | Yes (with localStorage persistence) |
+| Visual variants | Single style | 4 variants (note, tip, caution, danger) |
+| Scheduling | No | Yes (startDate/endDate) |
+| Page targeting | Manual (per-page) | Automatic (glob patterns) |
+| Multiple banners | No | Yes (stack, first, rotate modes) |
+| CTA links | Manual HTML | Built-in link option |
+
+## Built-in Banner
+
+Starlight's built-in Banner is configured per-page using frontmatter:
+
+```mdx
+---
+title: My Page
+banner:
+  content: |
+    This page has been updated!
+    <a href="/changelog">See what's new</a>
+---
+```
+
+### When to Use Built-in Banner
+
+The built-in Banner works well for page-specific notices that only apply to a single page, simple static announcements where you don't need dismissal or visual variants, and situations where you want minimal setup without installing a plugin.
+
+### Limitations
+
+- Must be added to each page individually
+- No way for users to dismiss the banner
+- Single visual style (accent color background)
+- No date-based scheduling
+- No automatic page targeting
+
+## starlight-announcement Plugin
+
+This plugin is configured once in `astro.config.mjs` and applies site-wide:
+
+```js
+starlightAnnouncement({
+  announcements: [
+    {
+      id: 'v2-release',
+      content: 'Version 2.0 is now available!',
+      variant: 'tip',
+      link: { text: 'See changelog', href: '/changelog' },
+      dismissible: true,
+      startDate: '2025-01-01',
+      endDate: '2025-01-31',
+      showOn: ['/**'],
+      hideOn: ['/api/**'],
+    },
+  ],
+})
+```
+
+### When to Use This Plugin
+
+This plugin shines when you need announcements that span multiple pages, especially if users should be able to dismiss them. It's also the right choice for time-sensitive content like sales or maintenance windows, when you want to show multiple announcements at once, or when you need visual variants to convey urgency.
+
+### Key Advantages
+
+Configure your announcements once in `astro.config.mjs` and they apply everywhere. No need to edit individual pages. Users can dismiss announcements, and their preference is remembered via localStorage. Scheduling lets you set start and end dates for time-limited content. The four visual variants (note, tip, caution, danger) convey meaning through color, and glob patterns let you target specific sections without touching frontmatter.
+
+## Using Both Together
+
+The plugin is designed to work alongside the built-in Banner. When both are present:
+
+1. The built-in Banner renders first (from page frontmatter)
+2. Plugin announcements render below it
+
+This allows you to use:
+- **Built-in Banner** for page-specific notices
+- **Plugin announcements** for site-wide messaging
+
+```mdx
+---
+title: API Reference
+banner:
+  content: This API is in beta. Expect breaking changes.
+---
+```
+
+Combined with plugin config:
+
+```js
+starlightAnnouncement({
+  announcements: [
+    {
+      id: 'conference',
+      content: 'Join us at DevCon 2025!',
+      variant: 'tip',
+      showOn: ['/**'],
+    },
+  ],
+})
+```
+
+Result: The page shows both the page-specific beta warning AND the site-wide conference announcement.
+
+## Migration from Built-in Banner
+
+If you have existing Banner content in frontmatter that you want to centralize:
+
+### Before (frontmatter on multiple pages)
+
+```mdx
+// guides/intro.mdx
+---
+banner:
+  content: New tutorial available!
+---
+
+// guides/advanced.mdx
+---
+banner:
+  content: New tutorial available!
+---
+```
+
+### After (single plugin config)
+
+```js
+starlightAnnouncement({
+  announcements: [
+    {
+      id: 'new-tutorial',
+      content: 'New tutorial available!',
+      variant: 'tip',
+      showOn: ['/guides/**'],
+    },
+  ],
+})
+```
+
+Then remove the `banner` frontmatter from individual pages.
+
+## Summary
+
+| Use Case | Recommendation |
+|----------|----------------|
+| One-off page notice | Built-in Banner |
+| Site-wide announcement | starlight-announcement |
+| Dismissible notice | starlight-announcement |
+| Time-limited promotion | starlight-announcement |
+| Multiple simultaneous notices | starlight-announcement |
+| Quick, no-install solution | Built-in Banner |
+| Visual variants needed | starlight-announcement |

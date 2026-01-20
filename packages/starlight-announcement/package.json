@@ -6,10 +6,16 @@
   "author": "frostybee",
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    ".": "./index.ts",
+    "./components/AnnouncementBanner.astro": "./src/components/AnnouncementBanner.astro",
+    "./styles/announcement.css": "./src/styles/announcement.css"
+  },
+  "dependencies": {
+    "picomatch": "^4.0.2"
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.37.2",
+    "@types/picomatch": "^3.0.1",
     "astro": "^5.16.8"
   },
   "peerDependencies": {

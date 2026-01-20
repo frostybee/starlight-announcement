@@ -1,0 +1,78 @@
+---
+title: Links & CTAs Demo
+description: Live demo of announcements with call-to-action links
+---
+
+This page demonstrates announcements with call-to-action (CTA) links. Look at the top of the page to see announcements with clickable links.
+
+## Links Displayed
+
+The announcements at the top of this page showcase:
+
+1. **Internal link:** Links to another page in the documentation
+2. **External link:** Links to an external website
+3. **No link:** Simple announcement without a CTA
+
+## Configuration
+
+Announcements with links are configured using the `link` property:
+
+```js
+starlightAnnouncement({
+  announcements: [
+    // With internal link
+    {
+      id: 'demo-internal-link',
+      content: 'New to the plugin? Check out our guide!',
+      variant: 'tip',
+      link: {
+        text: 'Getting Started',
+        href: '/getting-started/',
+      },
+      showOn: ['/demos/links/'],
+    },
+    // With external link
+    {
+      id: 'demo-external-link',
+      content: 'Star us on GitHub if you find this useful!',
+      variant: 'note',
+      link: {
+        text: 'GitHub Repository',
+        href: 'https://github.com/frostybee/starlight-announcement',
+      },
+      showOn: ['/demos/links/'],
+    },
+    // Without link
+    {
+      id: 'demo-no-link',
+      content: 'This announcement has no link - just informational text.',
+      variant: 'caution',
+      showOn: ['/demos/links/'],
+    },
+  ],
+})
+```
+
+## Link Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `text` | `string` | Yes | The link text displayed to users |
+| `href` | `string` | Yes | The URL (internal path or external URL) |
+
+## Link Styling
+
+Links are styled to stand out from the announcement content:
+
+- Underlined text for clarity
+- Accent color matching the variant
+- Hover effect for interactivity
+
+## Try It
+
+- **Click** the links to navigate to their destinations
+- **Hover** over links to see the hover effect
+
+---
+
+See [Announcement Options](/guides/announcements/) for detailed documentation on the `link` property.

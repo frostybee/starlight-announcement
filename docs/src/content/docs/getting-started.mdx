@@ -1,8 +1,9 @@
 ---
 title: Getting Started
+description: Install and configure the starlight-announcement plugin
 ---
 
-A plugin to add custom announcement to your Starlight docs.
+A Starlight plugin that adds enhanced announcement banners with dismissibility, variants, scheduling, and page targeting - features missing from the built-in Banner component.
 
 ## Prerequisites
 
@@ -56,7 +57,17 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
    export default defineConfig({
      integrations: [
        starlight({
-   +      plugins: [starlightAnnouncement()],
+   +      plugins: [
+   +        starlightAnnouncement({
+   +          announcements: [
+   +            {
+   +              id: 'welcome',
+   +              content: 'Welcome to our documentation!',
+   +              variant: 'tip',
+   +            },
+   +          ],
+   +        }),
+   +      ],
          title: 'My Docs',
        }),
      ],
@@ -66,3 +77,59 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
 3. [Start the development server](https://starlight.astro.build/getting-started/#start-the-development-server) to preview the plugin in action.
 
 </Steps>
+
+## Basic Example
+
+Here's a simple configuration with multiple announcements:
+
+```js
+// astro.config.mjs
+import starlight from '@astrojs/starlight'
+import { defineConfig } from 'astro/config'
+import starlightAnnouncement from 'starlight-announcement'
+
+export default defineConfig({
+  integrations: [
+    starlight({
+      plugins: [
+        starlightAnnouncement({
+          announcements: [
+            {
+              id: 'v2-release',
+              content: 'Version 2.0 is now available!',
+              variant: 'tip',
+              link: {
+                text: 'See changelog',
+                href: '/changelog',
+              },
+            },
+            {
+              id: 'breaking-changes',
+              content: 'Breaking changes in the API.',
+              variant: 'caution',
+              dismissible: true,
+            },
+          ],
+        }),
+      ],
+      title: 'My Docs',
+    }),
+  ],
+})
+```
+
+## What You Get
+
+After installation, the plugin automatically:
+
+- **Displays announcements** at the top of every page (or targeted pages)
+- **Persists dismissals** in localStorage so users don't see dismissed announcements again
+- **Respects scheduling** if you set `startDate` or `endDate`
+- **Applies page targeting** if you use `showOn` or `hideOn` patterns
+
+## Next Steps
+
+- [Plugin vs Built-in Banner](/guides/comparison/) - When to use this plugin vs Starlight's built-in Banner
+- [Configuration Options](/guides/configuration/) - All available plugin options
+- [Announcement Options](/guides/announcements/) - Variants, scheduling, and targeting
+- [Display Modes](/guides/display-modes/) - Stack, first, or rotate multiple announcements

@@ -1,9 +1,9 @@
 ---
-title: starlight-announcement
-description: A plugin to add custom announcement to your Starlight docs.
+title: Starlight Announcement
+description: A Starlight plugin for adding enhanced announcement banners with dismissibility, variants, scheduling, and page targeting.
 head:
   - tag: title
-    content: starlight-announcement
+    content: Starlight Announcement
   - tag: style
     content: |
       .hero-html {
@@ -15,16 +15,38 @@ head:
 template: splash
 editUrl: false
 hero:
-  tagline: A plugin to add custom announcement to your Starlight docs.
+  tagline: Enhanced announcement banners with dismissibility, variants, scheduling, and page targeting for your Starlight docs.
   image:
-    html: '🔋'
+    html: '📢'
   actions:
     - text: Get Started
       link: /getting-started/
-      icon: right-arrow
+      icon: rocket
+    - text: Star on GitHub
+      link: https://github.com/frostybee/starlight-announcement
+      icon: star
+      variant: secondary
+      external: true
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components'
+
+## Features
+
+<CardGrid>
+  <Card title="Dismissible Banners" icon="close">
+    Users can dismiss announcements with a close button. Dismissed state persists in localStorage.
+  </Card>
+  <Card title="Multiple Variants" icon="information">
+    Choose from `note`, `tip`, `caution`, or `danger` variants matching Starlight's aside styles.
+  </Card>
+  <Card title="Date Scheduling" icon="seti:clock">
+    Show announcements only during specific date ranges with `startDate` and `endDate` options.
+  </Card>
+  <Card title="Page Targeting" icon="document">
+    Use glob patterns with `showOn` and `hideOn` to control which pages display each announcement.
+  </Card>
+</CardGrid>
 
 ## Next steps
 
@@ -32,7 +54,13 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
   <Card title="Install the plugin" icon="puzzle">
     Check the [getting started guide](/getting-started/) for installation instructions.
   </Card>
-  <Card title="Configure the plugin" icon="setting">
-    Edit your config in the `astro.config.mjs` file.
+  <Card title="Why this plugin?" icon="information">
+    See how it [compares to Starlight's built-in Banner](/guides/comparison/) component.
+  </Card>
+  <Card title="Configure announcements" icon="setting">
+    Learn how to [configure announcements](/guides/configuration/) with variants, scheduling, and targeting.
+  </Card>
+  <Card title="Display modes" icon="bars">
+    Explore [display modes](/guides/display-modes/) to control how multiple announcements are shown.
   </Card>
 </CardGrid>

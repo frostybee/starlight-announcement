@@ -1,0 +1,47 @@
+---
+title: Live Demos
+description: Live demos showcasing all announcement features and configurations
+---
+
+Explore live demos of all announcement features. Each demo page displays real announcements configured specifically for that page using the `showOn` targeting option.
+
+## Available Demos
+
+| Demo | Description |
+|------|-------------|
+| [Variants](/demos/variants/) | All four visual variants: note, tip, caution, danger |
+| [Links & CTAs](/demos/links/) | Announcements with call-to-action buttons |
+| [Dismissible](/demos/dismissible/) | Dismissible vs non-dismissible announcements |
+| [Display Modes](/demos/display-modes/) | Stack, first, and rotate display modes |
+| [Scheduling](/demos/scheduling/) | Time-based announcement visibility |
+
+## How These Demos Work
+
+Each demo page has announcements specifically targeted to it using the `showOn` option. For example, the variants demo page only shows variant-related announcements:
+
+```js
+{
+  id: 'demo-note',
+  content: 'This is a note variant announcement.',
+  variant: 'note',
+  showOn: ['/demos/variants/'],
+}
+```
+
+This lets you see announcements in action with real configurations rather than static screenshots.
+
+## Try It Yourself
+
+The announcements on these pages are fully functional:
+
+- **Dismiss** announcements using the close button (refresh to see them again after clearing localStorage)
+- **Click links** to navigate to referenced pages
+- **Watch rotation** on the display modes demo
+
+## Configuration Reference
+
+For detailed documentation on all options, see:
+
+- [Configuration Options](/guides/configuration/) - Plugin-level settings
+- [Announcement Options](/guides/announcements/) - Individual announcement settings
+- [Display Modes](/guides/display-modes/) - How multiple announcements are shown

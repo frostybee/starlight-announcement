@@ -1,0 +1,387 @@
+---
+/**
+ * Interactive demo component showcasing the three display modes:
+ * - Stack: All announcements visible
+ * - First: Only the first announcement shown
+ * - Rotate: Carousel cycling through announcements
+ */
+
+interface Props {
+  mode: 'stack' | 'first' | 'rotate';
+}
+
+const { mode } = Astro.props;
+
+const announcements = [
+  { id: 1, content: 'Version 2.0 is now available!', variant: 'tip', icon: '<path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/>' },
+  { id: 2, content: 'API documentation has been updated.', variant: 'note', icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>' },
+  { id: 3, content: 'Scheduled maintenance on Sunday.', variant: 'caution', icon: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' },
+];
+---
+
+<div class="demo-container" data-mode={mode}>
+  <div class="demo-banner-area" data-rotate={mode === 'rotate' ? '' : undefined}>
+    {mode === 'stack' && announcements.map((ann) => (
+      <div class="demo-banner" data-variant={ann.variant}>
+        <div class="demo-banner-inner">
+          <svg class="demo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <Fragment set:html={ann.icon} />
+          </svg>
+          <span>{ann.content}</span>
+        </div>
+        <button class="demo-dismiss" aria-label="Dismiss">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    ))}
+
+    {mode === 'first' && (
+      <>
+        <div class="demo-banner" data-variant={announcements[0].variant}>
+          <div class="demo-banner-inner">
+            <svg class="demo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <Fragment set:html={announcements[0].icon} />
+            </svg>
+            <span>{announcements[0].content}</span>
+          </div>
+          <button class="demo-dismiss" aria-label="Dismiss">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="demo-hidden-count">
+          <span>+{announcements.length - 1} more announcements configured</span>
+        </div>
+      </>
+    )}
+
+    {mode === 'rotate' && (
+      <div class="demo-carousel">
+        {announcements.map((ann, i) => (
+          <div class="demo-banner" data-variant={ann.variant} data-index={i} data-active={i === 0 ? '' : undefined}>
+            <div class="demo-banner-inner">
+              <svg class="demo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <Fragment set:html={ann.icon} />
+              </svg>
+              <span>{ann.content}</span>
+            </div>
+            <button class="demo-dismiss" aria-label="Dismiss">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  {mode === 'rotate' && (
+    <div class="demo-controls">
+      <button class="demo-nav demo-prev" aria-label="Previous announcement">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="demo-dots">
+        {announcements.map((_, i) => (
+          <button class="demo-dot" data-index={i} data-active={i === 0 ? '' : undefined} aria-label={`Show announcement ${i + 1}`} />
+        ))}
+      </div>
+      <button class="demo-nav demo-next" aria-label="Next announcement">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  )}
+</div>
+
+<script>
+  function initRotateDemo() {
+    document.querySelectorAll<HTMLElement>('.demo-container[data-mode="rotate"]').forEach((container) => {
+      const banners = container.querySelectorAll<HTMLElement>('.demo-banner');
+      const dots = container.querySelectorAll<HTMLElement>('.demo-dot');
+      const prevBtn = container.querySelector<HTMLElement>('.demo-prev');
+      const nextBtn = container.querySelector<HTMLElement>('.demo-next');
+      if (banners.length <= 1) return;
+
+      let current = 0;
+      let interval: ReturnType<typeof setInterval>;
+      const AUTO_ROTATE_MS = 4000;
+
+      function show(index: number) {
+        // Wrap around
+        if (index < 0) index = banners.length - 1;
+        if (index >= banners.length) index = 0;
+        current = index;
+        banners.forEach((b, i) => {
+          if (i === current) {
+            b.setAttribute('data-active', '');
+          } else {
+            b.removeAttribute('data-active');
+          }
+        });
+        dots.forEach((d, i) => {
+          if (i === current) {
+            d.setAttribute('data-active', '');
+          } else {
+            d.removeAttribute('data-active');
+          }
+        });
+      }
+
+      function next() {
+        show(current + 1);
+      }
+
+      function startAutoRotate() {
+        interval = setInterval(next, AUTO_ROTATE_MS);
+      }
+
+      function resetAutoRotate() {
+        clearInterval(interval);
+        startAutoRotate();
+      }
+
+      // Dot click handlers
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          show(i);
+          resetAutoRotate();
+        });
+      });
+
+      // Prev/next button handlers
+      prevBtn?.addEventListener('click', () => {
+        show(current - 1);
+        resetAutoRotate();
+      });
+      nextBtn?.addEventListener('click', () => {
+        show(current + 1);
+        resetAutoRotate();
+      });
+
+      // Initialize
+      show(0);
+      startAutoRotate();
+    });
+  }
+
+  initRotateDemo();
+  document.addEventListener('astro:page-load', initRotateDemo);
+</script>
+
+<style>
+  .demo-container {
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    background: var(--sl-color-gray-6);
+  }
+
+  .demo-banner-area {
+    min-height: 44px;
+  }
+
+  .demo-carousel {
+    position: relative;
+    min-height: 44px;
+  }
+
+  .demo-banner {
+    --_bg: var(--sl-color-blue-low);
+    --_border: var(--sl-color-blue);
+    --_icon: var(--sl-color-blue);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    font-size: var(--sl-text-sm);
+    background: linear-gradient(
+      135deg,
+      var(--_bg) 0%,
+      color-mix(in srgb, var(--_bg) 85%, transparent) 100%
+    );
+    border-bottom: 1px solid color-mix(in srgb, var(--_border) 40%, transparent);
+  }
+
+  /* Left accent bar */
+  .demo-banner::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--_border);
+    opacity: 0.9;
+  }
+
+  .demo-banner:last-child {
+    border-bottom: none;
+  }
+
+  .demo-banner[data-variant='note'] {
+    --_bg: var(--sl-color-blue-low);
+    --_border: var(--sl-color-blue);
+    --_icon: var(--sl-color-blue);
+  }
+
+  .demo-banner[data-variant='tip'] {
+    --_bg: var(--sl-color-green-low);
+    --_border: var(--sl-color-green);
+    --_icon: var(--sl-color-green);
+  }
+
+  .demo-banner[data-variant='caution'] {
+    --_bg: var(--sl-color-orange-low);
+    --_border: var(--sl-color-orange);
+    --_icon: var(--sl-color-orange);
+  }
+
+  .demo-banner[data-variant='danger'] {
+    --_bg: var(--sl-color-red-low);
+    --_border: var(--sl-color-red);
+    --_icon: var(--sl-color-red);
+  }
+
+  .demo-banner-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    flex: 1;
+  }
+
+  .demo-icon {
+    flex-shrink: 0;
+    color: var(--_icon);
+    opacity: 0.9;
+  }
+
+  .demo-banner span {
+    color: var(--sl-color-white);
+    line-height: 1.5;
+  }
+
+  .demo-dismiss {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0.25rem;
+    color: color-mix(in srgb, var(--sl-color-white) 50%, transparent);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .demo-dismiss:hover {
+    color: var(--sl-color-white);
+    background: color-mix(in srgb, var(--_border) 50%, transparent);
+  }
+
+  /* Carousel transitions */
+  .demo-carousel .demo-banner {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateX(8px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .demo-carousel .demo-banner[data-active] {
+    position: relative;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .demo-hidden-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    background: var(--sl-color-gray-6);
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+
+  .demo-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: var(--sl-color-gray-6);
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+
+  .demo-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    background: var(--sl-color-gray-5);
+    border: none;
+    border-radius: 0.375rem;
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .demo-nav:hover {
+    background: var(--sl-color-gray-4);
+    color: var(--sl-color-white);
+  }
+
+  .demo-nav:active {
+    transform: scale(0.94);
+  }
+
+  .demo-dots {
+    display: flex;
+    gap: 0.375rem;
+  }
+
+  .demo-dot {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    background: var(--sl-color-gray-4);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .demo-dot:hover {
+    background: var(--sl-color-gray-3);
+    transform: scale(1.2);
+  }
+
+  .demo-dot[data-active] {
+    background: var(--sl-color-accent);
+    transform: scale(1.2);
+  }
+</style>

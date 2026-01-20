@@ -1,0 +1,93 @@
+---
+title: Dismissible Demo
+description: Live demo of dismissible vs non-dismissible announcements
+---
+
+This page demonstrates the difference between dismissible and non-dismissible announcements. Look at the top of the page to see both types.
+
+## Announcements Displayed
+
+The announcements at the top of this page showcase:
+
+1. **Dismissible** (default): Has a close button, state persists in localStorage
+2. **Non-dismissible:** No close button, always visible
+
+## Configuration
+
+Control dismissibility with the `dismissible` property:
+
+```js
+starlightAnnouncement({
+  announcements: [
+    // Dismissible (default behavior)
+    {
+      id: 'demo-dismissible',
+      content: 'This announcement can be dismissed. Click the X to hide it!',
+      variant: 'tip',
+      dismissible: true, // This is the default
+      showOn: ['/demos/dismissible/'],
+    },
+    // Non-dismissible
+    {
+      id: 'demo-non-dismissible',
+      content: 'This announcement cannot be dismissed - no close button!',
+      variant: 'danger',
+      dismissible: false,
+      showOn: ['/demos/dismissible/'],
+    },
+  ],
+})
+```
+
+## How Dismissal Works
+
+### localStorage Persistence
+
+When a user dismisses an announcement:
+
+1. The announcement ID is stored in `localStorage` under `starlight-announcements-dismissed`
+2. On subsequent page loads, dismissed announcements are hidden automatically
+3. The dismissal persists across browser sessions
+
+### Storage Format
+
+```js
+// localStorage key: starlight-announcements-dismissed
+["demo-dismissible", "another-dismissed-id"]
+```
+
+### Resetting Dismissed Announcements
+
+To see dismissed announcements again:
+
+1. Open browser DevTools (F12)
+2. Go to Application → Local Storage
+3. Delete the `starlight-announcements-dismissed` key
+4. Refresh the page
+
+Or run this in the console:
+
+```js
+localStorage.removeItem('starlight-announcements-dismissed');
+location.reload();
+```
+
+## When to Use Non-Dismissible
+
+Use `dismissible: false` for:
+
+- **Critical security alerts** that users must see
+- **Active maintenance notices** during outages
+- **Legal/compliance notices** that require acknowledgment
+- **Temporary but important** announcements
+
+## Try It
+
+1. **Dismiss** the tip announcement by clicking the X button
+2. **Notice** the danger announcement has no X button
+3. **Refresh** the page - the tip stays hidden, danger remains visible
+4. **Reset** using the console command above to see the tip again
+
+---
+
+See [Announcement Options](/guides/announcements/) for detailed documentation on dismissibility.

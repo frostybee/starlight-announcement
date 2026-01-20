@@ -1,0 +1,185 @@
+---
+title: Display Modes
+description: Control how multiple announcements are displayed
+---
+
+import DisplayModesDemo from '../../../components/DisplayModesDemo.astro';
+
+When you have multiple active announcements, the `displayMode` option controls how they are presented to users.
+
+## Available Modes
+
+### Stack Mode (Default)
+
+```js
+starlightAnnouncement({
+  displayMode: 'stack',
+  announcements: [/* ... */],
+})
+```
+
+All active announcements are displayed vertically, one below the other. This is the default behavior.
+
+Use this when each announcement is equally important and you want users to see everything. Works best for sites with only a few simultaneous announcements.
+
+<DisplayModesDemo mode="stack" />
+
+### First Mode
+
+```js
+starlightAnnouncement({
+  displayMode: 'first',
+  announcements: [/* ... */],
+})
+```
+
+Only the first active announcement (based on array order) is displayed. Others are hidden.
+
+Use this to prioritize a single announcement while keeping the UI clean. Order your config array by priority, with higher priority announcements coming first.
+
+<DisplayModesDemo mode="first" />
+
+### Rotate Mode
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  rotateInterval: 5000, // 5 seconds
+  announcements: [/* ... */],
+})
+```
+
+Announcements cycle through automatically like a carousel. Only one is visible at a time, transitioning on the specified interval.
+
+Use this to display multiple announcements without stacking them. Good for promotional content or when you want all announcements to get visibility over time.
+
+<DisplayModesDemo mode="rotate" />
+
+## Configuration Examples
+
+### Prioritized Announcements
+
+Use `first` mode with carefully ordered announcements:
+
+```js
+starlightAnnouncement({
+  displayMode: 'first',
+  announcements: [
+    // Highest priority - shown first if active
+    {
+      id: 'security-alert',
+      content: 'Critical security update required!',
+      variant: 'danger',
+    },
+    // Medium priority - shown only if security alert is not active
+    {
+      id: 'maintenance',
+      content: 'Scheduled maintenance this weekend.',
+      variant: 'caution',
+    },
+    // Lowest priority - shown only if above are not active
+    {
+      id: 'new-feature',
+      content: 'Check out our new dashboard!',
+      variant: 'tip',
+    },
+  ],
+})
+```
+
+### Rotating Promotions
+
+Use `rotate` mode for promotional content:
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  rotateInterval: 4000, // 4 seconds
+  announcements: [
+    {
+      id: 'promo-1',
+      content: 'New tutorial: Getting started with APIs',
+      variant: 'tip',
+      link: { text: 'Watch Now', href: '/tutorials/api-intro' },
+    },
+    {
+      id: 'promo-2',
+      content: 'Join our Discord community!',
+      variant: 'note',
+      link: { text: 'Join', href: 'https://discord.gg/example' },
+    },
+    {
+      id: 'promo-3',
+      content: 'Newsletter: Weekly tips and updates',
+      variant: 'tip',
+      link: { text: 'Subscribe', href: '/newsletter' },
+    },
+  ],
+})
+```
+
+### Stacked Important Notices
+
+Use `stack` mode when all announcements are important:
+
+```js
+starlightAnnouncement({
+  displayMode: 'stack',
+  announcements: [
+    {
+      id: 'deprecation',
+      content: 'v1 API deprecated - migrate by March 1st',
+      variant: 'caution',
+    },
+    {
+      id: 'new-docs',
+      content: 'Documentation has been reorganized',
+      variant: 'note',
+    },
+  ],
+})
+```
+
+## Mode Comparison
+
+| Feature | Stack | First | Rotate |
+|---------|-------|-------|--------|
+| Shows all announcements | Yes | No | No (cycles) |
+| Visual space used | High | Low | Low |
+| User attention | Distributed | Focused | Cycling |
+| Good for many announcements | No | Yes | Yes |
+| Animation | None | None | Fade |
+
+## Combining with Page Targeting
+
+Display modes work with page targeting. Only announcements matching the current page are considered:
+
+```js
+starlightAnnouncement({
+  displayMode: 'first',
+  announcements: [
+    // This shows on API pages
+    {
+      id: 'api-notice',
+      content: 'API rate limits updated',
+      showOn: ['/api/**'],
+    },
+    // This shows on guide pages
+    {
+      id: 'guide-notice',
+      content: 'New beginner tutorials available',
+      showOn: ['/guides/**'],
+    },
+  ],
+})
+```
+
+With `first` mode above:
+- On `/api/users` → Shows "API rate limits updated"
+- On `/guides/intro` → Shows "New beginner tutorials available"
+- On `/about` → Shows nothing (no matching announcements)
+
+## Next Steps
+
+- [Announcement Options](/guides/announcements/) - Configure individual announcements
+- [Configuration](/guides/configuration/) - All plugin options

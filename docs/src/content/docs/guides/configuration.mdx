@@ -1,0 +1,148 @@
+---
+title: Configuration
+description: Configure the starlight-announcement plugin options
+---
+
+The `starlight-announcement` plugin accepts the following configuration options.
+
+## Basic Configuration
+
+```js
+// astro.config.mjs
+import starlight from '@astrojs/starlight'
+import { defineConfig } from 'astro/config'
+import starlightAnnouncement from 'starlight-announcement'
+
+export default defineConfig({
+  integrations: [
+    starlight({
+      plugins: [
+        starlightAnnouncement({
+          displayMode: 'stack',
+          rotateInterval: 5000,
+          announcements: [
+            // Your announcements here
+          ],
+        }),
+      ],
+      title: 'My Docs',
+    }),
+  ],
+})
+```
+
+## Plugin Options
+
+### `displayMode`
+
+- **Type:** `'stack' | 'first' | 'rotate'`
+- **Default:** `'stack'`
+
+Controls how multiple active announcements are displayed. See [Display Modes](/guides/display-modes/) for details.
+
+| Mode | Behavior |
+|------|----------|
+| `stack` | All active announcements shown vertically (default) |
+| `first` | Only the first matching announcement is displayed |
+| `rotate` | Carousel - cycles through announcements on interval |
+
+```js
+starlightAnnouncement({
+  displayMode: 'first', // Only show one announcement at a time
+})
+```
+
+### `rotateInterval`
+
+- **Type:** `number`
+- **Default:** `5000`
+
+Interval in milliseconds between announcement transitions when using `rotate` display mode.
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  rotateInterval: 3000, // 3 seconds between transitions
+})
+```
+
+### `announcements`
+
+- **Type:** `Announcement[]`
+- **Default:** `[]`
+
+Array of announcement objects. Each announcement has the following properties:
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `id` | `string` | Yes | - | Unique identifier (used for dismissal persistence) |
+| `content` | `string` | Yes | - | The announcement text (supports HTML) |
+| `variant` | `string` | No | `'note'` | Visual style: `note`, `tip`, `caution`, `danger` |
+| `dismissible` | `boolean` | No | `true` | Whether users can dismiss the announcement |
+| `link` | `object` | No | - | Optional CTA link with `text` and `href` |
+| `startDate` | `string` | No | - | ISO date when announcement becomes visible |
+| `endDate` | `string` | No | - | ISO date when announcement stops being visible |
+| `showOn` | `string[]` | No | `['/**']` | Glob patterns for pages to show on |
+| `hideOn` | `string[]` | No | `[]` | Glob patterns for pages to hide from |
+
+See [Announcement Options](/guides/announcements/) for detailed documentation of each property.
+
+## Complete Example
+
+```js
+// astro.config.mjs
+import starlight from '@astrojs/starlight'
+import { defineConfig } from 'astro/config'
+import starlightAnnouncement from 'starlight-announcement'
+
+export default defineConfig({
+  integrations: [
+    starlight({
+      plugins: [
+        starlightAnnouncement({
+          displayMode: 'stack',
+          announcements: [
+            {
+              id: 'v3-migration',
+              content: 'v3.0 has breaking changes!',
+              variant: 'caution',
+              link: {
+                text: 'Migration Guide',
+                href: '/guides/v3-migration',
+              },
+              dismissible: true,
+              startDate: '2025-01-01',
+              endDate: '2025-02-01',
+              showOn: ['/**'],
+              hideOn: ['/api/**'],
+            },
+            {
+              id: 'welcome',
+              content: 'Welcome to our new documentation site!',
+              variant: 'tip',
+              showOn: ['/'],
+            },
+          ],
+        }),
+      ],
+      title: 'My Docs',
+    }),
+  ],
+})
+```
+
+## Internationalization
+
+The plugin includes built-in translations for:
+- English
+- French
+- Spanish
+- German
+- Dutch
+
+The dismiss button label and "Learn more" text are automatically translated based on Starlight's locale settings.
+
+## Next Steps
+
+- [Announcement Options](/guides/announcements/) - Detailed guide on variants, scheduling, and targeting
+- [Display Modes](/guides/display-modes/) - How to control multiple announcement display

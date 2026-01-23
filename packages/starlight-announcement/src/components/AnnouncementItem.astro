@@ -56,6 +56,9 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
       <Fragment set:html={iconPath} />
     </svg>
     <div class="sl-announcement-content">
+      {/* Security note: Content is rendered as HTML to support rich formatting (links, bold, etc.).
+          Ensure announcement content comes from trusted sources only (e.g., your config file).
+          Do not use this with untrusted user input or external data sources. */}
       <span class="sl-announcement-text" set:html={resolvedContent} />
       {link && (
         <a href={link.href} class="sl-announcement-link">

@@ -11,11 +11,19 @@ export function isWithinDateRange(
 ): boolean {
   if (startDate) {
     const start = new Date(startDate);
+    if (isNaN(start.getTime())) {
+      console.warn(`[starlight-announcement] Invalid startDate: ${startDate}`);
+      return false;
+    }
     if (now < start) return false;
   }
 
   if (endDate) {
     const end = new Date(endDate);
+    if (isNaN(end.getTime())) {
+      console.warn(`[starlight-announcement] Invalid endDate: ${endDate}`);
+      return false;
+    }
     // Set end date to end of day for inclusive behavior
     end.setHours(23, 59, 59, 999);
     if (now > end) return false;
@@ -24,21 +32,35 @@ export function isWithinDateRange(
   return true;
 }
 
+// Cache picomatch matchers to avoid recreating them on every check
+const matcherCache = new Map<string, (path: string) => boolean>();
+
+function getMatcher(pattern: string): (path: string) => boolean {
+  let matcher = matcherCache.get(pattern);
+  if (!matcher) {
+    matcher = picomatch(pattern, { dot: true });
+    matcherCache.set(pattern, matcher);
+  }
+  return matcher;
+}
+
 /**
  * Check if a pathname matches any of the given glob patterns
  */
 export function matchesPatterns(pathname: string, patterns: string[]): boolean {
   if (patterns.length === 0) return false;
 
-  // Normalize pathname - remove trailing slash for consistent matching
-  const normalizedPath = pathname.endsWith('/') && pathname !== '/'
-    ? pathname.slice(0, -1)
-    : pathname;
+  // Normalize pathname:
+  // 1. Remove query strings and hashes
+  // 2. Collapse multiple consecutive slashes
+  // 3. Remove trailing slash (except for root)
+  let normalizedPath = pathname.split('?')[0].split('#')[0];
+  normalizedPath = normalizedPath.replace(/\/+/g, '/');
+  if (normalizedPath.endsWith('/') && normalizedPath !== '/') {
+    normalizedPath = normalizedPath.slice(0, -1);
+  }
 
-  return patterns.some((pattern) => {
-    const matcher = picomatch(pattern, { dot: true });
-    return matcher(normalizedPath);
-  });
+  return patterns.some((pattern) => getMatcher(pattern)(normalizedPath));
 }
 
 /**

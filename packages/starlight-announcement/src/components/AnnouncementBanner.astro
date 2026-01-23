@@ -52,6 +52,9 @@ const isRotateMode = displayMode === 'rotate' && activeAnnouncements.length > 1;
 <script>
   const STORAGE_KEY = 'starlight-announcements-dismissed';
 
+  // Track rotation interval for cleanup
+  let rotationInterval: number | undefined;
+
   function getDismissed(): string[] {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -91,39 +94,58 @@ const isRotateMode = displayMode === 'rotate' && activeAnnouncements.length > 1;
 
   function initDismissals() {
     ensureDismissedStyles();
-
-    // Attach dismiss button handlers
-    document.querySelectorAll<HTMLElement>('[data-dismiss-announcement]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.dismissAnnouncement;
-        if (id) {
-          dismiss(id);
-          ensureDismissedStyles(); // Update stylesheet to hide the dismissed announcement
-        }
-      });
-    });
   }
 
+  // Use event delegation for dismiss buttons (avoids memory leaks with view transitions)
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLElement>('[data-dismiss-announcement]');
+    if (btn) {
+      const id = btn.dataset.dismissAnnouncement;
+      if (id) {
+        dismiss(id);
+        ensureDismissedStyles();
+      }
+    }
+  });
+
   function initRotation() {
+    // Clear any existing interval to prevent memory leaks
+    if (rotationInterval) {
+      clearInterval(rotationInterval);
+      rotationInterval = undefined;
+    }
+
     const container = document.querySelector<HTMLElement>('[data-announcement-rotate]');
     if (!container) return;
 
     const items = container.querySelectorAll<HTMLElement>('.sl-announcement');
     if (items.length <= 1) return;
 
-    const interval = parseInt(container.dataset.rotateInterval || '5000', 10);
+    const rawInterval = parseInt(container.dataset.rotateInterval || '5000', 10);
+    const interval = isNaN(rawInterval) || rawInterval <= 0 ? 5000 : rawInterval;
     let current = 0;
 
     function showNext() {
       items.forEach((item, i) => {
-        item.style.display = i === current ? '' : 'none';
+        const isActive = i === current;
+        item.style.display = isActive ? '' : 'none';
+        // Update ARIA for screen readers
+        item.setAttribute('aria-hidden', isActive ? 'false' : 'true');
       });
       current = (current + 1) % items.length;
     }
 
     showNext();
-    setInterval(showNext, interval);
+    rotationInterval = window.setInterval(showNext, interval);
   }
+
+  // Clean up interval before Astro view transitions swap content
+  document.addEventListener('astro:before-swap', () => {
+    if (rotationInterval) {
+      clearInterval(rotationInterval);
+      rotationInterval = undefined;
+    }
+  });
 
   // Initialize on page load
   initDismissals();

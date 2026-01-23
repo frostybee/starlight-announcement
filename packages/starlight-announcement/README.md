@@ -1,15 +1,18 @@
-# `starlight-announcement`
+# `starlight-announcement` 🔋
 
 A plugin to add custom announcement to your Starlight docs.
 
-## Documentation
+## Package
 
-Want to get started immediately?
+If you are looking for the Starlight plugin package, you can find it in the [`packages/starlight-announcement/`](/packages/starlight-announcement/) directory.
 
-Check out the `starlight-announcement` getting started guide.
+## Project structure
+
+This project uses pnpm workspaces to develop a single Starlight plugin from the `packages/starlight-announcement/` directory. A Starlight documentation site is also available in the `docs/` directory that is also used for testing and demonstrating the Starlight plugin.
 
 ## License
 
 Licensed under the MIT License, Copyright © frostybee.
 
-See [LICENSE](https://github.com/frostybee/starlight-announcement/blob/main/LICENSE) for more information.
+See [LICENSE](/LICENSE) for more information.
+

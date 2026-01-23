@@ -1,8 +1,8 @@
 {
   "name": "starlight-announcement",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
-  "description": "A plugin to add custom announcement to your Starlight docs.",
+  "description": "A plugin to add custom announcements to your Starlight docs.",
   "author": "frostybee",
   "type": "module",
   "exports": {

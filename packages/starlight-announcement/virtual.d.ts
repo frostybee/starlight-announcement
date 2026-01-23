@@ -1,11 +1,13 @@
 declare module 'virtual:starlight-announcement/config' {
+  export type LocalizableString = string | Record<string, string>;
+
   export const displayMode: 'stack' | 'first' | 'rotate';
   export const rotateInterval: number;
   export const announcements: Array<{
     id: string;
-    content: string;
+    content: LocalizableString;
     link?: {
-      text: string;
+      text: LocalizableString;
       href: string;
     };
     variant: 'note' | 'tip' | 'caution' | 'danger';

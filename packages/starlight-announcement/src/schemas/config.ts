@@ -1,15 +1,26 @@
 import { z } from 'astro/zod';
 
+/**
+ * Schema for a localizable string field.
+ * Accepts either a simple string or an object with locale keys.
+ */
+export const localizableStringSchema = z.union([
+  z.string(),
+  z.record(z.string(), z.string()),
+]);
+
+export type LocalizableString = z.infer<typeof localizableStringSchema>;
+
 const linkSchema = z.object({
-  text: z.string(),
+  text: localizableStringSchema,
   href: z.string(),
 });
 
 const announcementSchema = z.object({
   /** Unique identifier for this announcement (used for dismissal persistence) */
   id: z.string(),
-  /** The announcement content (supports HTML) */
-  content: z.string(),
+  /** The announcement content (supports HTML). Can be a string or locale map. */
+  content: localizableStringSchema,
   /** Optional call-to-action link */
   link: linkSchema.optional(),
   /** Visual variant matching Starlight's aside styles */

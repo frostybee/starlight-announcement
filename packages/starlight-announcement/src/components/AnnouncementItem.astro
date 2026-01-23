@@ -1,5 +1,6 @@
 ---
 import type { AnnouncementConfig } from '../schemas/config';
+import { resolveLocalizedString, getDefaultLocale } from '../libs/i18n';
 
 interface Props {
   announcement: AnnouncementConfig;
@@ -7,6 +8,16 @@ interface Props {
 
 const { announcement } = Astro.props;
 const { id, content, link, variant, dismissible } = announcement;
+
+// Get locales
+const locale = Astro.locals.locale;
+const defaultLocale = getDefaultLocale();
+
+// Resolve localized content
+const resolvedContent = resolveLocalizedString(content, locale, defaultLocale) ?? '';
+const resolvedLinkText = link
+  ? resolveLocalizedString(link.text, locale, defaultLocale)
+  : undefined;
 
 const dismissLabel = Astro.locals.t('starlightAnnouncement.dismiss');
 const learnMoreLabel = Astro.locals.t('starlightAnnouncement.learnMore');
@@ -45,10 +56,10 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
       <Fragment set:html={iconPath} />
     </svg>
     <div class="sl-announcement-content">
-      <span class="sl-announcement-text" set:html={content} />
+      <span class="sl-announcement-text" set:html={resolvedContent} />
       {link && (
         <a href={link.href} class="sl-announcement-link">
-          <span>{link.text || learnMoreLabel}</span>
+          <span>{resolvedLinkText || learnMoreLabel}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>

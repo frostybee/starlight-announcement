@@ -2,7 +2,7 @@
   "name": "starlight-announcement-monorepo",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "A plugin to add custom announcement to your Starlight docs.",
+  "description": "A plugin to add custom announcements to your Starlight docs.",
   "author": "frostybee",
   "type": "module",
   "engines": {

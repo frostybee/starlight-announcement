@@ -3,7 +3,7 @@ import { pluginConfigSchema, type StarlightAnnouncementConfig } from './src/sche
 import { createAnnouncementIntegration } from './src/libs/integration';
 import { translations } from './src/translations';
 
-export type { StarlightAnnouncementConfig, AnnouncementConfig, PluginConfig } from './src/schemas/config';
+export type { StarlightAnnouncementConfig, AnnouncementConfig, PluginConfig, LocalizableString } from './src/schemas/config';
 
 export default function starlightAnnouncement(
   userConfig?: StarlightAnnouncementConfig

@@ -76,10 +76,10 @@ Array of announcement objects. Each announcement has the following properties:
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
 | `id` | `string` | Yes | - | Unique identifier (used for dismissal persistence) |
-| `content` | `string` | Yes | - | The announcement text (supports HTML) |
+| `content` | `string \| Record<string, string>` | Yes | - | The announcement text (supports HTML and localization) |
 | `variant` | `string` | No | `'note'` | Visual style: `note`, `tip`, `caution`, `danger` |
 | `dismissible` | `boolean` | No | `true` | Whether users can dismiss the announcement |
-| `link` | `object` | No | - | Optional CTA link with `text` and `href` |
+| `link` | `object` | No | - | Optional CTA link with `text` (localizable) and `href` |
 | `startDate` | `string` | No | - | ISO date when announcement becomes visible |
 | `endDate` | `string` | No | - | ISO date when announcement stops being visible |
 | `showOn` | `string[]` | No | `['/**']` | Glob patterns for pages to show on |
@@ -141,6 +141,34 @@ The plugin includes built-in translations for:
 - Dutch
 
 The dismiss button label and "Learn more" text are automatically translated based on Starlight's locale settings.
+
+## Localized Content
+
+Announcement content and link text can be localized for multilingual sites.
+
+### Locale Map
+
+```js
+{
+  id: 'welcome',
+  content: {
+    en: 'Welcome to our documentation!',
+    fr: 'Bienvenue dans notre documentation !',
+    es: '¡Bienvenido a nuestra documentación!',
+  },
+  link: {
+    text: { en: 'Get Started', fr: 'Commencer' },
+    href: '/getting-started',
+  },
+}
+```
+
+### Fallback Chain
+
+1. Exact locale match (e.g., `fr`)
+2. Default locale from Starlight config
+3. English (`en`) as universal fallback
+4. First available translation
 
 ## Next Steps
 

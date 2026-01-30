@@ -35,6 +35,7 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
 ---
 
 <div
+  id={`sl-announcement-${id}`}
   class="sl-announcement"
   data-announcement-id={id}
   data-variant={variant}

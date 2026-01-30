@@ -21,7 +21,7 @@ export const translations = {
     'starlightAnnouncement.dismiss': 'Schließen',
     'starlightAnnouncement.learnMore': 'Mehr erfahren',
     'starlightAnnouncement.indicatorLabel': 'Ankündigungs-Navigation',
-    'starlightAnnouncement.goToAnnouncement': 'Geh zur Ankündigung {current} von {total}',
+    'starlightAnnouncement.goToAnnouncement': 'Gehe zur Ankündigung {current} von {total}',
   },
   nl: {
     'starlightAnnouncement.dismiss': 'Sluiten',

@@ -18,10 +18,10 @@ export const translations = {
     'starlightAnnouncement.goToAnnouncement': 'Ir al anuncio {current} de {total}',
   },
   de: {
-    'starlightAnnouncement.dismiss': 'Schliessen',
+    'starlightAnnouncement.dismiss': 'Schließen',
     'starlightAnnouncement.learnMore': 'Mehr erfahren',
-    'starlightAnnouncement.indicatorLabel': 'Ankündigungsnavigation',
-    'starlightAnnouncement.goToAnnouncement': 'Zur Ankündigung {current} von {total}',
+    'starlightAnnouncement.indicatorLabel': 'Ankündigungs-Navigation',
+    'starlightAnnouncement.goToAnnouncement': 'Geh zur Ankündigung {current} von {total}',
   },
   nl: {
     'starlightAnnouncement.dismiss': 'Sluiten',

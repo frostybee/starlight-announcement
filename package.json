@@ -20,7 +20,7 @@
     "build:docs": "pnpm -F starlight-announcement-docs build",
     "start:docs": "pnpm -F starlight-announcement-docs start",
     "ci-version": "changeset version && pnpm install --no-frozen-lockfile",
-    "ci-publish": "pnpm build && changeset publish"
+    "ci-publish": "changeset publish"
   },
   "homepage": "https://github.com/frostybee/starlight-announcement",
   "repository": {

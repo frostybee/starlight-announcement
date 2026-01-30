@@ -1,0 +1,345 @@
+---
+title: Custom Styling
+description: Customize announcement appearance using CSS
+---
+
+You can customize the appearance of announcements using CSS in your site's `custom.css` file. This approach gives you full control over colors, spacing, and layout without requiring plugin configuration changes.
+
+## Setup
+
+Create or edit `src/styles/custom.css` in your Starlight project and import it in your `astro.config.mjs`:
+
+```js
+// astro.config.mjs
+starlight({
+  customCss: ['./src/styles/custom.css'],
+})
+```
+
+:::tip[CSS Specificity]
+If your styles aren't applying, you may need to increase specificity. Double the class selector:
+```css
+.sl-announcement.sl-announcement {
+  --sl-announcement-bg: #custom;
+}
+```
+:::
+
+## CSS Selectors
+
+The announcement component exposes several CSS selectors you can use to target and style different parts of the banner.
+
+### Target All Announcements
+
+The `.sl-announcement` class is applied to every announcement banner. Use this selector to apply global styles that affect all announcements regardless of their variant or ID.
+
+```css
+.sl-announcement {
+  /* Your styles */
+}
+```
+
+### Target by Variant
+
+Each announcement has a `data-variant` attribute corresponding to its variant type (`note`, `tip`, `caution`, or `danger`). Use attribute selectors to apply styles only to specific variants.
+
+```css
+/* Note variant (blue) */
+.sl-announcement[data-variant='note'] { }
+
+/* Tip variant (green) */
+.sl-announcement[data-variant='tip'] { }
+
+/* Caution variant (orange) */
+.sl-announcement[data-variant='caution'] { }
+
+/* Danger variant (red) */
+.sl-announcement[data-variant='danger'] { }
+```
+
+### Target by Announcement ID
+
+Every announcement includes a `data-announcement-id` attribute matching the `id` you defined in your configuration. This allows you to apply unique styles to individual announcements.
+
+```css
+.sl-announcement[data-announcement-id='my-announcement'] {
+  /* Styles for this specific announcement */
+}
+```
+
+### Target Child Elements
+
+The announcement component contains several child elements you can style independently. Use these class selectors to customize specific parts of the banner.
+
+| Class | Element |
+|-------|---------|
+| `.sl-announcements-container` | Wrapper for all announcements |
+| `.sl-announcement-inner` | Inner wrapper containing icon and content |
+| `.sl-announcement-icon` | The variant icon (info, star, warning, etc.) |
+| `.sl-announcement-content` | Wrapper containing text and link |
+| `.sl-announcement-text` | The announcement message text |
+| `.sl-announcement-link` | The call-to-action link button |
+| `.sl-announcement-dismiss` | The dismiss/close button |
+
+```css
+/* Icon */
+.sl-announcement-icon { }
+
+/* Content wrapper */
+.sl-announcement-content { }
+
+/* Text */
+.sl-announcement-text { }
+
+/* Call-to-action link */
+.sl-announcement-link { }
+
+/* Dismiss button */
+.sl-announcement-dismiss { }
+```
+
+### Target Rotate Indicator
+
+When using `rotate` display mode, a navigation indicator appears below the announcements. You can customize its appearance using these selectors:
+
+| Class | Element |
+|-------|---------|
+| `.sl-rotate-indicator` | Container for the dot navigation |
+| `.sl-rotate-dot` | Individual navigation dot |
+| `.sl-rotate-dot--active` | Currently active dot |
+
+```css
+/* Indicator container */
+.sl-rotate-indicator { }
+
+/* Navigation dots */
+.sl-rotate-dot { }
+
+/* Active dot */
+.sl-rotate-dot--active { }
+```
+
+Example customizations:
+
+```css
+/* Remove indicator background */
+.sl-rotate-indicator {
+  background: transparent;
+  border-top: none;
+}
+
+/* Custom dot colors */
+.sl-rotate-dot {
+  background: var(--sl-color-gray-4);
+}
+
+.sl-rotate-dot--active {
+  background: var(--sl-color-green);
+}
+
+/* Pill-shaped indicators instead of dots */
+.sl-rotate-dot {
+  width: 16px;
+  height: 4px;
+  border-radius: 2px;
+}
+```
+
+## CSS Variables
+
+The announcement component uses CSS custom properties (variables) to control its color scheme. By overriding these variables, you can create custom color themes without writing complex CSS rules.
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `--sl-announcement-bg` | Background color | Variant's low color |
+| `--sl-announcement-border` | Border and left accent bar | Variant's base color |
+| `--sl-announcement-accent` | Link text and focus outline | Variant's high color |
+| `--sl-announcement-icon` | Icon color | Variant's base color |
+| `--sl-announcement-padding-y` | Vertical (top/bottom) padding | `0.625rem` |
+
+Override these variables on any selector to customize colors:
+
+```css
+.sl-announcement {
+  --sl-announcement-bg: var(--sl-color-blue-low);     /* Background color */
+  --sl-announcement-border: var(--sl-color-blue);      /* Border and accent bar color */
+  --sl-announcement-accent: var(--sl-color-blue-high); /* Link text color */
+  --sl-announcement-icon: var(--sl-color-blue);        /* Icon color */
+}
+```
+
+:::tip
+These variables default to Starlight's built-in color tokens. You can replace them with any valid CSS color value, including hex codes (`#7c3aed`), `rgb()`, `hsl()`, or `color-mix()` functions.
+:::
+
+## Examples
+
+The following examples demonstrate common customization patterns. Copy and adapt these snippets to your `custom.css` file.
+
+### Custom Brand Colors
+
+Match your brand identity by overriding the color variables on a specific announcement. Target the announcement by its `id` to apply unique colors without affecting other banners.
+
+```css
+.sl-announcement[data-announcement-id='brand-announcement'] {
+  --sl-announcement-bg: #7c3aed20;
+  --sl-announcement-border: #7c3aed;
+  --sl-announcement-accent: #a78bfa;
+  --sl-announcement-icon: #7c3aed;
+}
+```
+
+### Gradient Background
+
+Replace the default solid background with a gradient for a more dynamic appearance. This example applies a teal-to-cyan gradient to all `tip` variant announcements.
+
+```css
+.sl-announcement[data-variant='tip'] {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15) 0%,
+    rgba(6, 182, 212, 0.1) 100%
+  );
+}
+```
+
+### Remove the Accent Bar
+
+The colored bar on the left edge is rendered using a `::before` pseudo-element. Hide it by setting `display: none` if you prefer a cleaner look.
+
+```css
+.sl-announcement::before {
+  display: none;
+}
+```
+
+### Hide the Icon
+
+Remove the variant icon for a more minimal appearance. You can hide it globally or only for specific variants.
+
+```css
+/* Hide icon on all announcements */
+.sl-announcement-icon {
+  display: none;
+}
+```
+
+To hide the icon only for a specific variant, combine the selectors:
+
+```css
+/* Hide icon only on note variant */
+.sl-announcement[data-variant='note'] .sl-announcement-icon {
+  display: none;
+}
+```
+
+### Compact Layout
+
+Reduce vertical space by decreasing the padding and font size. This is useful when you want the announcement to be less prominent.
+
+```css
+.sl-announcement {
+  --sl-announcement-padding-y: 0.375rem;
+  font-size: var(--sl-text-xs);
+}
+```
+
+### Centered Banner with Max Width
+
+On wide screens, long text can become hard to read. Constrain the content width and center it for better readability.
+
+```css
+.sl-announcement-content {
+  max-width: 80ch;
+  margin-inline: auto;
+}
+```
+
+### Floating Style
+
+Transform the banner into a floating card with rounded corners and a drop shadow. This works well when you want the announcement to feel detached from the header.
+
+```css
+.sl-announcement {
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-announcement-border);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.sl-announcement::before {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+```
+
+### Dark Mode Adjustments
+
+Starlight automatically switches between light and dark themes. Use the `data-theme` attribute on the root element to fine-tune colors for each mode.
+
+```css
+:root[data-theme='dark'] .sl-announcement {
+  --sl-announcement-bg: rgba(59, 130, 246, 0.1);
+}
+
+:root[data-theme='light'] .sl-announcement {
+  --sl-announcement-bg: rgba(59, 130, 246, 0.08);
+}
+```
+
+### Custom Link Style
+
+Restyle the call-to-action link to match your design. The example below creates a solid button-like appearance instead of the default pill style.
+
+```css
+.sl-announcement-link {
+  background: var(--sl-announcement-border);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.sl-announcement-link:hover {
+  background: var(--sl-announcement-accent);
+}
+```
+
+## Complete Custom Theme Example
+
+This example demonstrates how to create a fully custom color theme by combining CSS variables with theme-aware adjustments. We'll create a purple "info" style that looks good in both light and dark modes.
+
+First, add the CSS to your `custom.css` file. The selector targets the announcement by its `id`, so these styles only apply to this specific banner:
+
+```css
+/* Custom purple "info" theme */
+.sl-announcement[data-announcement-id='info-banner'] {
+  --sl-announcement-bg: rgba(139, 92, 246, 0.12);
+  --sl-announcement-border: #8b5cf6;
+  --sl-announcement-accent: #c4b5fd;
+  --sl-announcement-icon: #a78bfa;
+}
+
+/* Adjust opacity and accent for light mode readability */
+:root[data-theme='light'] .sl-announcement[data-announcement-id='info-banner'] {
+  --sl-announcement-bg: rgba(139, 92, 246, 0.08);
+  --sl-announcement-accent: #7c3aed;
+}
+```
+
+Then configure the announcement in your `astro.config.mjs`. The `id` must match the selector you used in CSS. Setting a `variant` provides fallback styling if CSS fails to load:
+
+```js
+starlightAnnouncement({
+  announcements: [
+    {
+      id: 'info-banner', // Matches the CSS selector
+      content: 'Check out our new features!',
+      variant: 'note', // Base variant (provides fallback)
+    },
+  ],
+})
+```
+
+## Next Steps
+
+- [Announcement Options](/starlight-announcement/guides/announcements/): Configure announcement content and behavior
+- [Configuration](/starlight-announcement/guides/configuration/): All plugin configuration options

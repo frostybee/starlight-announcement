@@ -2,6 +2,10 @@
  * i18n utilities for resolving localized announcement content.
  */
 
+import type { LocalizableString } from '../schemas/config';
+
+export type { LocalizableString };
+
 // Cached default locale from Starlight config
 let cachedDefaultLocale: string | undefined;
 let defaultLocaleResolved = false;
@@ -28,18 +32,14 @@ export function getDefaultLocale(): string | undefined {
         cachedDefaultLocale = 'en';
       }
     }
-  } catch {
+  } catch (e) {
+    console.warn('[starlight-announcement] Failed to parse STARLIGHT_LOCALES:', e);
     cachedDefaultLocale = 'en';
   }
 
   defaultLocaleResolved = true;
   return cachedDefaultLocale;
 }
-
-/**
- * Type for values that can be either a simple string or a locale-keyed record.
- */
-export type LocalizableString = string | Record<string, string>;
 
 /**
  * Resolve a localizable string to its value for the given locale.
@@ -65,6 +65,7 @@ export function resolveLocalizedString(
   }
 
   const record = value as Record<string, string>;
+  const availableLocales = Object.keys(record);
 
   // 1. Try exact locale match
   if (locale && record[locale]) {

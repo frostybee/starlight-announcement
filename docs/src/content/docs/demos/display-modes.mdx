@@ -3,89 +3,17 @@ title: Display Modes Demo
 description: Live demo of stack, first, and rotate display modes
 ---
 
-This page demonstrates how multiple announcements are displayed. The current site uses **stack** mode, showing all announcements vertically.
+This page demonstrates **stack mode**, the default display mode that shows all announcements vertically.
 
-## Current Mode: Stack
+## What You're Seeing
 
-Look at the top of this page - you'll see multiple announcements stacked vertically. This is the default `stack` display mode.
+Look at the top of this page - you'll see three announcements stacked one below the other. Each uses a different variant to make them visually distinct.
 
-## Display Mode Comparison
+The plugin supports three display modes: `stack`, `first`, and `rotate`. This demo uses stack mode, which displays all active announcements simultaneously.
 
-### Stack Mode (Current)
+## Demo Configuration
 
-All active announcements are displayed one below the other:
-
-```js
-starlightAnnouncement({
-  displayMode: 'stack', // Default
-  announcements: [
-    { id: 'first', content: 'First announcement', variant: 'note' },
-    { id: 'second', content: 'Second announcement', variant: 'tip' },
-    { id: 'third', content: 'Third announcement', variant: 'caution' },
-  ],
-})
-```
-
-**Result:** All three announcements visible, stacked vertically.
-
-### First Mode
-
-Only the first matching announcement is shown:
-
-```js
-starlightAnnouncement({
-  displayMode: 'first',
-  announcements: [
-    { id: 'priority-1', content: 'High priority', variant: 'danger' },
-    { id: 'priority-2', content: 'Medium priority', variant: 'caution' },
-    { id: 'priority-3', content: 'Low priority', variant: 'note' },
-  ],
-})
-```
-
-**Result:** Only "High priority" announcement visible.
-
-### Rotate Mode
-
-Announcements cycle through automatically:
-
-```js
-starlightAnnouncement({
-  displayMode: 'rotate',
-  rotateInterval: 5000, // 5 seconds
-  announcements: [
-    { id: 'promo-1', content: 'First promotion', variant: 'tip' },
-    { id: 'promo-2', content: 'Second promotion', variant: 'note' },
-    { id: 'promo-3', content: 'Third promotion', variant: 'tip' },
-  ],
-})
-```
-
-**Result:** Announcements cycle every 5 seconds.
-
-## Configuration
-
-The display mode is set at the plugin level:
-
-```js
-starlightAnnouncement({
-  displayMode: 'stack', // 'stack' | 'first' | 'rotate'
-  rotateInterval: 5000, // Only used with 'rotate' mode
-  announcements: [/* ... */],
-})
-```
-
-## Mode Selection Guide
-
-| Mode | Best For |
-|------|----------|
-| `stack` | Few important announcements that all need visibility |
-| `first` | Priority-based announcements where order matters |
-| `rotate` | Promotional content or many announcements |
-
-## Stacked Announcements on This Page
-
-The announcements displayed above are configured with different variants to demonstrate stacking:
+The announcements on this page are configured as:
 
 ```js
 {
@@ -111,9 +39,9 @@ The announcements displayed above are configured with different variants to demo
 ## Try It
 
 - **Dismiss** announcements one by one to see the stack shrink
-- **Refresh** after dismissing to see they stay hidden
-- Check the [Display Modes guide](/guides/display-modes/) for configuration details
+- **Refresh** after dismissing to see they stay hidden (localStorage)
+- **Clear storage** to reset all dismissed announcements
 
----
+## Learn More
 
-See [Display Modes](/guides/display-modes/) for detailed documentation on all display modes.
+See the [Display Modes guide](/starlight-announcement/guides/display-modes/) for complete documentation on all display modes, including `first` mode for priority-based display and `rotate` mode for cycling through announcements.

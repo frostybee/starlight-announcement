@@ -1,20 +1,21 @@
 {
   "name": "starlight-announcement",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "license": "MIT",
   "description": "A plugin to add custom announcements to your Starlight docs.",
   "author": "frostybee",
   "type": "module",
   "exports": {
     ".": "./index.ts",
+    "./components": "./src/components/index.ts",
     "./components/AnnouncementBanner.astro": "./src/components/AnnouncementBanner.astro",
-    "./styles/announcement.css": "./src/styles/announcement.css"
+    "./components/AnnouncementItem.astro": "./src/components/AnnouncementItem.astro"
   },
   "dependencies": {
     "picomatch": "^4.0.2"
   },
   "devDependencies": {
-    "@astrojs/starlight": "^0.37.2",
+    "@astrojs/starlight": "^0.37.4",
     "@types/picomatch": "^3.0.1",
     "astro": "^5.16.8"
   },

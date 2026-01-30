@@ -17,6 +17,8 @@ export default function starlightAnnouncement(
         injectTranslations(translations);
       },
       'config:setup': ({ addIntegration, updateConfig, config: starlightConfig }) => {
+        if (!config.enabled) return;
+
         // Override the Banner component with our announcement-aware version
         updateConfig({
           components: {

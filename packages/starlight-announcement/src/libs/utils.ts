@@ -1,65 +1,118 @@
 import picomatch from 'picomatch';
 import type { AnnouncementConfig } from '../schemas/config';
 
+/** Type for picomatch matcher function */
+type Matcher = (path: string) => boolean;
+
 /**
- * Check if a date string is within the specified range
+ * Check if a date string is within the specified range.
+ *
+ * All comparisons are done in UTC for consistency:
+ * - Date strings are parsed as UTC (ISO 8601 format recommended: YYYY-MM-DD)
+ * - The current time is converted to UTC for comparison
+ * - End dates include the entire day (23:59:59.999 UTC)
  */
 export function isWithinDateRange(
   startDate?: string,
   endDate?: string,
   now: Date = new Date()
 ): boolean {
+  const nowUtc = now.getTime();
+
   if (startDate) {
     const start = new Date(startDate);
-    if (isNaN(start.getTime())) {
-      console.warn(`[starlight-announcement] Invalid startDate: ${startDate}`);
-      return false;
-    }
-    if (now < start) return false;
+    if (nowUtc < start.getTime()) return false;
   }
 
   if (endDate) {
     const end = new Date(endDate);
-    if (isNaN(end.getTime())) {
-      console.warn(`[starlight-announcement] Invalid endDate: ${endDate}`);
-      return false;
-    }
-    // Set end date to end of day for inclusive behavior
-    end.setHours(23, 59, 59, 999);
-    if (now > end) return false;
+    // Set end date to end of day in UTC for inclusive end date behavior
+    end.setUTCHours(23, 59, 59, 999);
+    if (nowUtc > end.getTime()) return false;
   }
 
   return true;
 }
 
-// Cache picomatch matchers to avoid recreating them on every check
-const matcherCache = new Map<string, (path: string) => boolean>();
+// Cache picomatch matchers with LRU eviction to avoid recreating them on every check
+// Limit cache size to prevent unbounded memory growth in long-running servers
+const MATCHER_CACHE_MAX_SIZE = 100;
+const matcherCache = new Map<string, Matcher>();
 
-function getMatcher(pattern: string): (path: string) => boolean {
-  let matcher = matcherCache.get(pattern);
-  if (!matcher) {
-    matcher = picomatch(pattern, { dot: true });
-    matcherCache.set(pattern, matcher);
+/**
+ * Get a cached picomatch matcher for a pattern.
+ * Uses LRU eviction when cache is full.
+ */
+function getMatcher(pattern: string): Matcher {
+  const cached = matcherCache.get(pattern);
+  if (cached) {
+    // LRU: Move to end by re-inserting (Map maintains insertion order)
+    matcherCache.delete(pattern);
+    matcherCache.set(pattern, cached);
+    return cached;
   }
+
+  // Evict least-recently-used entry (first in Map) if cache is full
+  if (matcherCache.size >= MATCHER_CACHE_MAX_SIZE) {
+    const firstKey = matcherCache.keys().next().value;
+    // Explicit undefined check for type safety
+    if (firstKey !== undefined) {
+      matcherCache.delete(firstKey);
+    }
+  }
+
+  const matcher: Matcher = picomatch(pattern, { dot: true });
+  matcherCache.set(pattern, matcher);
   return matcher;
 }
 
 /**
- * Check if a pathname matches any of the given glob patterns
+ * Clear the matcher cache (for testing and HMR).
+ */
+export function clearMatcherCache(): void {
+  matcherCache.clear();
+}
+
+// Handle Vite HMR - clear cache when module is disposed
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    clearMatcherCache();
+  });
+}
+
+/**
+ * Normalize a pathname for pattern matching.
+ * - Removes query strings and hashes
+ * - Collapses multiple consecutive slashes
+ * - Removes trailing slash (except for root)
+ */
+function normalizePath(pathname: string): string {
+  // Remove query string
+  const queryIndex = pathname.indexOf('?');
+  let path = queryIndex >= 0 ? pathname.slice(0, queryIndex) : pathname;
+
+  // Remove hash
+  const hashIndex = path.indexOf('#');
+  path = hashIndex >= 0 ? path.slice(0, hashIndex) : path;
+
+  // Collapse multiple slashes
+  path = path.replace(/\/+/g, '/');
+
+  // Remove trailing slash (except for root)
+  if (path.length > 1 && path.endsWith('/')) {
+    path = path.slice(0, -1);
+  }
+
+  return path || '/';
+}
+
+/**
+ * Check if a pathname matches any of the given glob patterns.
  */
 export function matchesPatterns(pathname: string, patterns: string[]): boolean {
   if (patterns.length === 0) return false;
 
-  // Normalize pathname:
-  // 1. Remove query strings and hashes
-  // 2. Collapse multiple consecutive slashes
-  // 3. Remove trailing slash (except for root)
-  let normalizedPath = pathname.split('?')[0].split('#')[0];
-  normalizedPath = normalizedPath.replace(/\/+/g, '/');
-  if (normalizedPath.endsWith('/') && normalizedPath !== '/') {
-    normalizedPath = normalizedPath.slice(0, -1);
-  }
-
+  const normalizedPath = normalizePath(pathname);
   return patterns.some((pattern) => getMatcher(pattern)(normalizedPath));
 }
 

@@ -1,0 +1,164 @@
+---
+title: Internationalization
+description: Display localized announcement content for multilingual sites
+---
+
+The plugin includes built-in support for internationalization (i18n), allowing you to display localized announcement content and UI elements for multilingual Starlight sites.
+
+## Built-in Translations
+
+The plugin automatically translates UI elements based on your Starlight locale settings. The following languages are supported out of the box:
+
+| Language | Locale | Dismiss | Learn More | Indicator Label | Go to Announcement |
+|----------|--------|---------|------------|-----------------|-------------------|
+| English | `en` | Dismiss | Learn more | Announcement navigation | `Go to announcement {current} of {total}` |
+| French | `fr` | Fermer | En savoir plus | Navigation des annonces | `Aller à l'annonce {current} sur {total}` |
+| Spanish | `es` | Cerrar | Saber mas | Navegación de anuncios | `Ir al anuncio {current} de {total}` |
+| German | `de` | Schliessen | Mehr erfahren | Ankündigungsnavigation | `Zur Ankündigung {current} von {total}` |
+| Dutch | `nl` | Sluiten | Meer informatie | Aankondigingsnavigatie | `Ga naar aankondiging {current} van {total}` |
+
+The last two columns are used for accessibility labels on the rotate mode indicator navigation.
+
+These translations are applied automatically when your Starlight site uses one of these locales. No configuration is required.
+
+## Localized Content
+
+Announcement content and link text can be localized by providing a locale-keyed object instead of a plain string.
+
+### Basic Example
+
+```js
+starlightAnnouncement({
+  announcements: [
+    {
+      id: 'welcome',
+      content: {
+        en: 'Welcome to our documentation!',
+        fr: 'Bienvenue dans notre documentation !',
+        es: '¡Bienvenido a nuestra documentación!',
+      },
+      variant: 'tip',
+    },
+  ],
+})
+```
+
+### Localized Link Text
+
+You can also localize the call-to-action link text while keeping a single URL. If you omit `link.text` entirely, the translated "Learn more" label is used automatically.
+
+```js
+{
+  id: 'new-feature',
+  content: {
+    en: 'Check out our new API!',
+    fr: 'Découvrez notre nouvelle API !',
+  },
+  link: {
+    text: {
+      en: 'View Documentation',
+      fr: 'Voir la documentation',
+    },
+    href: '/api/reference',
+  },
+}
+```
+
+### Complete Multilingual Example
+
+Here's a full configuration for a site with English and French locales:
+
+```js
+// astro.config.mjs
+import starlight from '@astrojs/starlight'
+import { defineConfig } from 'astro/config'
+import starlightAnnouncement from 'starlight-announcement'
+
+export default defineConfig({
+  integrations: [
+    starlight({
+      title: 'My Docs',
+      locales: {
+        root: { label: 'English', lang: 'en' },
+        fr: { label: 'Français', lang: 'fr' },
+      },
+      plugins: [
+        starlightAnnouncement({
+          announcements: [
+            {
+              id: 'v2-release',
+              content: {
+                en: 'Version 2.0 is now available with new features!',
+                fr: 'La version 2.0 est disponible avec de nouvelles fonctionnalités !',
+              },
+              variant: 'tip',
+              link: {
+                text: { en: 'Release Notes', fr: 'Notes de version' },
+                href: '/changelog',
+              },
+            },
+            {
+              id: 'deprecation-notice',
+              content: {
+                en: 'API v1 will be deprecated on March 1st.',
+                fr: "L'API v1 sera dépréciée le 1er mars.",
+              },
+              variant: 'caution',
+            },
+          ],
+        }),
+      ],
+    }),
+  ],
+})
+```
+
+## Fallback Behavior
+
+When a translation is missing for the current locale, the plugin uses this fallback chain:
+
+1. **Exact locale match:** e.g., `fr` for French pages
+2. **Default locale:** your site's root/default locale
+3. **English (`en`):** universal fallback
+4. **First available:** any translation in the object
+
+This ensures announcements always display content, even if some translations are missing.
+
+### Example with Partial Translations
+
+```js
+{
+  id: 'partial-example',
+  content: {
+    en: 'This appears for English and any missing locale',
+    fr: 'Ceci apparaît pour le français',
+    // German visitors will see English (fallback)
+  },
+}
+```
+
+## Simple Strings for Single-Language Sites
+
+If your site only uses one language, you can use plain strings instead of locale objects:
+
+```js
+{
+  id: 'simple',
+  content: 'This is a simple announcement',
+  link: {
+    text: 'Learn more',
+    href: '/docs',
+  },
+}
+```
+
+The plugin handles both formats, so you can mix localized and non-localized announcements in the same configuration.
+
+## Adding Custom Translations
+
+The built-in UI translations (dismiss button, learn more) cannot be customized through the plugin configuration. If you need additional languages or custom text, you can override the styles using CSS to hide the text and display custom content, or contribute translations to the plugin repository.
+
+## Next Steps
+
+- [Configuration](/starlight-announcement/guides/configuration/): All plugin configuration options
+- [Custom Styling](/starlight-announcement/guides/custom-styling/): Customize appearance with CSS

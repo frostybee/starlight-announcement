@@ -3,7 +3,7 @@ title: Getting Started
 description: Install and configure the starlight-announcement plugin
 ---
 
-A Starlight plugin that adds enhanced announcement banners with dismissibility, variants, scheduling, and page targeting - features missing from the built-in Banner component.
+A Starlight plugin that adds enhanced announcement banners with dismissibility, variants, scheduling, and page targeting. These features are missing from the built-in Banner component.
 
 ## Prerequisites
 
@@ -118,6 +118,18 @@ export default defineConfig({
 })
 ```
 
+## Verify Installation
+
+After completing the setup, start your development server and you should see:
+
+1. A colored banner at the top of every page (below the header)
+2. A dismiss button (X) on the right side of the banner
+3. The banner disappears after clicking dismiss and stays hidden on page reload
+
+:::tip[Testing Dismissals]
+During development, you may want to reset dismissed announcements. Open your browser's DevTools, go to **Application** > **Local Storage**, and delete the `starlight-announcements-dismissed` key.
+:::
+
 ## What You Get
 
 After installation, the plugin automatically:
@@ -129,7 +141,8 @@ After installation, the plugin automatically:
 
 ## Next Steps
 
-- [Plugin vs Built-in Banner](/guides/comparison/) - When to use this plugin vs Starlight's built-in Banner
-- [Configuration Options](/guides/configuration/) - All available plugin options
-- [Announcement Options](/guides/announcements/) - Variants, scheduling, and targeting
-- [Display Modes](/guides/display-modes/) - Stack, first, or rotate multiple announcements
+- [Plugin vs Built-in Banner](/starlight-announcement/guides/comparison/): When to use this plugin vs Starlight's built-in Banner
+- [Configuration Options](/starlight-announcement/guides/configuration/): All available plugin options
+- [Announcement Options](/starlight-announcement/guides/announcements/): Variants, scheduling, and targeting
+- [Internationalization](/starlight-announcement/guides/internationalization/): Localized content for multilingual sites
+- [Custom Styling](/starlight-announcement/guides/custom-styling/): Customize appearance with CSS

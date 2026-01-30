@@ -33,12 +33,28 @@ export default defineConfig({
 
 ## Plugin Options
 
+### `enabled`
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Controls whether announcements are displayed. Set to `false` to disable all announcements while keeping your configuration intact.
+
+```js
+starlightAnnouncement({
+  enabled: false, // Disable announcements
+  announcements: [
+    // Config preserved but not shown
+  ],
+})
+```
+
 ### `displayMode`
 
 - **Type:** `'stack' | 'first' | 'rotate'`
 - **Default:** `'stack'`
 
-Controls how multiple active announcements are displayed. See [Display Modes](/guides/display-modes/) for details.
+Controls how multiple active announcements are displayed. See [Display Modes](/starlight-announcement/guides/display-modes/) for details.
 
 | Mode | Behavior |
 |------|----------|
@@ -56,6 +72,7 @@ starlightAnnouncement({
 
 - **Type:** `number`
 - **Default:** `5000`
+- **Minimum:** `500`
 
 Interval in milliseconds between announcement transitions when using `rotate` display mode.
 
@@ -63,6 +80,21 @@ Interval in milliseconds between announcement transitions when using `rotate` di
 starlightAnnouncement({
   displayMode: 'rotate',
   rotateInterval: 3000, // 3 seconds between transitions
+})
+```
+
+### `showRotateIndicator`
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+When using `rotate` display mode with multiple announcements, shows dot indicators below the banner. Users can click dots to jump to specific announcements, and the indicator supports keyboard navigation with arrow keys.
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  showRotateIndicator: true, // Show navigation dots (default)
+  // showRotateIndicator: false, // Hide navigation dots
 })
 ```
 
@@ -85,7 +117,7 @@ Array of announcement objects. Each announcement has the following properties:
 | `showOn` | `string[]` | No | `['/**']` | Glob patterns for pages to show on |
 | `hideOn` | `string[]` | No | `[]` | Glob patterns for pages to hide from |
 
-See [Announcement Options](/guides/announcements/) for detailed documentation of each property.
+See [Announcement Options](/starlight-announcement/guides/announcements/) for detailed documentation of each property.
 
 ## Complete Example
 
@@ -111,8 +143,8 @@ export default defineConfig({
                 href: '/guides/v3-migration',
               },
               dismissible: true,
-              startDate: '2025-01-01',
-              endDate: '2025-02-01',
+              startDate: '2026-01-01',
+              endDate: '2026-02-01',
               showOn: ['/**'],
               hideOn: ['/api/**'],
             },
@@ -131,46 +163,9 @@ export default defineConfig({
 })
 ```
 
-## Internationalization
-
-The plugin includes built-in translations for:
-- English
-- French
-- Spanish
-- German
-- Dutch
-
-The dismiss button label and "Learn more" text are automatically translated based on Starlight's locale settings.
-
-## Localized Content
-
-Announcement content and link text can be localized for multilingual sites.
-
-### Locale Map
-
-```js
-{
-  id: 'welcome',
-  content: {
-    en: 'Welcome to our documentation!',
-    fr: 'Bienvenue dans notre documentation !',
-    es: '¡Bienvenido a nuestra documentación!',
-  },
-  link: {
-    text: { en: 'Get Started', fr: 'Commencer' },
-    href: '/getting-started',
-  },
-}
-```
-
-### Fallback Chain
-
-1. Exact locale match (e.g., `fr`)
-2. Default locale from Starlight config
-3. English (`en`) as universal fallback
-4. First available translation
-
 ## Next Steps
 
-- [Announcement Options](/guides/announcements/) - Detailed guide on variants, scheduling, and targeting
-- [Display Modes](/guides/display-modes/) - How to control multiple announcement display
+- [Announcement Options](/starlight-announcement/guides/announcements/): Detailed guide on variants, scheduling, and targeting
+- [Display Modes](/starlight-announcement/guides/display-modes/): How to control multiple announcement display
+- [Internationalization](/starlight-announcement/guides/internationalization/): Localized content for multilingual sites
+- [Custom Styling](/starlight-announcement/guides/custom-styling/): Customize appearance with CSS

@@ -14,6 +14,8 @@ Each announcement in the `announcements` array can be configured with the follow
 
 A unique identifier for the announcement. This is used to track dismissals in localStorage, so changing an announcement's `id` will cause it to appear again for users who dismissed it.
 
+IDs must contain only alphanumeric characters, hyphens (`-`), and underscores (`_`). Duplicate IDs will cause a validation error.
+
 ```js
 {
   id: 'v2-release-notice',
@@ -27,10 +29,10 @@ Choose meaningful, stable IDs. If you change an ID, all users will see the annou
 
 ### `content`
 
-- **Type:** `string`
+- **Type:** `string | Record<string, string>`
 - **Required:** Yes
 
-The announcement text. Supports HTML for simple formatting.
+The announcement text. Supports HTML for simple formatting. Can be a plain string or a locale-keyed object for multilingual sites (see [Internationalization](/starlight-announcement/guides/internationalization/)).
 
 ```js
 {
@@ -87,10 +89,12 @@ The visual style of the announcement. These match Starlight's [aside styles](htt
 
 ### `link`
 
-- **Type:** `{ text: string; href: string }`
+- **Type:** `{ text: string | Record<string, string>; href: string }`
 - **Default:** `undefined`
 
-An optional call-to-action link displayed next to the announcement content.
+An optional call-to-action link displayed next to the announcement content. The `text` property can be localized (see [Internationalization](/starlight-announcement/guides/internationalization/)). If `text` is omitted, the translated "Learn more" label is used.
+
+For security, `javascript:`, `data:`, and `vbscript:` URLs are blocked.
 
 ```js
 {
@@ -134,7 +138,7 @@ The date when the announcement should start appearing. The announcement won't be
 {
   id: 'conference',
   content: 'Join us at the developer conference!',
-  startDate: '2025-03-01',
+  startDate: '2026-03-01',
 }
 ```
 
@@ -149,8 +153,8 @@ The date when the announcement should stop appearing. The announcement is hidden
 {
   id: 'sale',
   content: 'Holiday sale - 50% off!',
-  startDate: '2025-12-20',
-  endDate: '2025-12-31',
+  startDate: '2026-12-20',
+  endDate: '2026-12-31',
 }
 ```
 
@@ -225,6 +229,10 @@ Glob patterns specifying which pages should NOT show the announcement. Takes pre
 | `/api/*` | Direct children of `/api/` (not nested) |
 | `/docs/v2/**` | All pages under `/docs/v2/` |
 
+:::note[Path Normalization]
+Paths are normalized before matching: query strings and hashes are stripped, multiple consecutive slashes collapse to one, and trailing slashes are removed (except for root `/`).
+:::
+
 ## Complete Example
 
 ```js
@@ -232,15 +240,15 @@ starlightAnnouncement({
   announcements: [
     // Time-limited event announcement
     {
-      id: 'conference-2025',
-      content: 'Join us at DevCon 2025!',
+      id: 'conference-2026',
+      content: 'Join us at DevCon 2026!',
       variant: 'tip',
       link: {
         text: 'Register Now',
         href: 'https://devcon.example.com',
       },
-      startDate: '2025-02-01',
-      endDate: '2025-03-15',
+      startDate: '2026-02-01',
+      endDate: '2026-03-15',
     },
 
     // API deprecation warning (only on API pages)
@@ -253,7 +261,7 @@ starlightAnnouncement({
         href: '/guides/v2-migration',
       },
       showOn: ['/api/v1/**'],
-      endDate: '2025-06-01',
+      endDate: '2026-06-01',
     },
 
     // Non-dismissible maintenance notice
@@ -262,8 +270,8 @@ starlightAnnouncement({
       content: 'Scheduled maintenance: Jan 15, 2am-4am UTC',
       variant: 'danger',
       dismissible: false,
-      startDate: '2025-01-14',
-      endDate: '2025-01-15',
+      startDate: '2026-01-14',
+      endDate: '2026-01-15',
     },
   ],
 })
@@ -271,5 +279,6 @@ starlightAnnouncement({
 
 ## Next Steps
 
-- [Display Modes](/guides/display-modes/) - Control how multiple announcements are shown
-- [Configuration](/guides/configuration/) - All plugin configuration options
+- [Display Modes](/starlight-announcement/guides/display-modes/): Control how multiple announcements are shown
+- [Internationalization](/starlight-announcement/guides/internationalization/): Localized content for multilingual sites
+- [Custom Styling](/starlight-announcement/guides/custom-styling/): Customize appearance with CSS

@@ -3,18 +3,20 @@ title: Scheduling Demo
 description: Live demo of time-based announcement scheduling
 ---
 
-This page demonstrates time-based scheduling with `startDate` and `endDate` options.
+This page demonstrates time-based scheduling with `startDate` and `endDate` options. Scheduling lets you automatically show and hide announcements based on dates, perfect for time-sensitive content like sales, events, or deprecation notices.
 
 ## How Scheduling Works
 
-Announcements can be scheduled to appear only during specific date ranges:
+The plugin checks announcement dates against the current date at page load. Announcements outside their scheduled window are automatically hidden without any manual intervention.
 
-- **startDate:** Announcement won't appear before this date
-- **endDate:** Announcement won't appear after this date (end of day, inclusive)
+- **startDate:** The announcement remains hidden until this date arrives. On the start date, the announcement becomes visible.
+- **endDate:** The announcement stays visible through the end of this date (inclusive), then hides automatically the following day.
+
+You can use either property alone or combine them for a specific time window.
 
 ## Active Announcement
 
-The announcement at the top of this page is scheduled to be visible now (no date restrictions):
+The banner at the top of this page demonstrates a simple announcement with no date restrictions. Without `startDate` or `endDate`, announcements are always active (subject to other conditions like page targeting or dismissal).
 
 ```js
 {
@@ -27,9 +29,11 @@ The announcement at the top of this page is scheduled to be visible now (no date
 
 ## Scheduling Examples
 
+The following examples show different scheduling patterns. These announcements aren't displayed on this page because their dates don't match the current date.
+
 ### Future Announcement
 
-This announcement won't appear until 2030:
+Use `startDate` alone to prepare announcements ahead of time. The announcement sits in your config but remains invisible until the specified date. This is useful for coordinating launches or pre-announcing events.
 
 ```js
 {
@@ -42,7 +46,7 @@ This announcement won't appear until 2030:
 
 ### Past Announcement
 
-This announcement expired in 2020:
+Use `endDate` alone when you want an announcement to run indefinitely until a cutoff date. After the end date passes, the announcement disappears automatically. This is ideal for deprecation warnings or limited-time offers where you know the end date but not necessarily when to start.
 
 ```js
 {
@@ -55,45 +59,53 @@ This announcement expired in 2020:
 
 ### Limited Time Window
 
-This announcement only shows during a specific period:
+Combine both `startDate` and `endDate` for precise control over visibility. The announcement appears on the start date and disappears after the end date. Perfect for sales, conferences, or maintenance windows with known durations.
 
 ```js
 {
   id: 'limited-time',
   content: 'Holiday sale - 50% off!',
   variant: 'tip',
-  startDate: '2025-12-20',
-  endDate: '2025-12-31',
+  startDate: '2026-12-20',
+  endDate: '2026-12-31',
 }
 ```
 
 ## Date Format
 
-Dates use ISO 8601 format (`YYYY-MM-DD`):
+All dates must use ISO 8601 format (`YYYY-MM-DD`). Dates are compared in UTC, so announcements become visible or hidden at the same moment globally regardless of the user's timezone. End dates are inclusive through 23:59:59 UTC.
 
 ```js
 {
-  startDate: '2025-01-15',  // January 15, 2025
-  endDate: '2025-02-28',    // February 28, 2025 (end of day)
+  startDate: '2026-01-15',  // January 15, 2026
+  endDate: '2026-02-28',    // February 28, 2026 (end of day)
 }
 ```
 
+:::tip
+Using ISO format ensures consistent parsing across all browsers and locales. Avoid formats like `01/15/2026` or `15-01-2026` as they may be interpreted differently.
+:::
+
 ## Use Cases
 
-| Scenario | Configuration |
-|----------|---------------|
-| **Product launch** | `startDate: '2025-03-01'` |
-| **Limited sale** | `startDate: '2025-12-20'`, `endDate: '2025-12-31'` |
-| **Deprecation notice** | `endDate: '2025-06-01'` (expires when deprecated) |
-| **Conference** | `startDate: '2025-09-01'`, `endDate: '2025-09-15'` |
-| **Maintenance** | `startDate: '2025-01-14'`, `endDate: '2025-01-15'` |
+The table below shows common scheduling patterns for different scenarios. Choose the configuration that matches your use case.
+
+| Scenario | Configuration | Behavior |
+|----------|---------------|----------|
+| **Product launch** | `startDate: '2026-03-01'` | Hidden until March 1st, then always visible |
+| **Limited sale** | `startDate: '2026-12-20'`, `endDate: '2026-12-31'` | Visible only during the sale period |
+| **Deprecation notice** | `endDate: '2026-06-01'` | Visible now, hides after the deprecation date |
+| **Conference** | `startDate: '2026-09-01'`, `endDate: '2026-09-15'` | Visible only during the conference |
+| **Maintenance** | `startDate: '2026-01-14'`, `endDate: '2026-01-15'` | Two-day window around maintenance |
 
 ## Complete Example
+
+This example shows a realistic configuration mixing always-visible announcements with scheduled ones. Each announcement serves a different purpose and uses scheduling appropriately.
 
 ```js
 starlightAnnouncement({
   announcements: [
-    // Always visible
+    // Always visible - no date restrictions
     {
       id: 'welcome',
       content: 'Welcome to our docs!',
@@ -105,8 +117,8 @@ starlightAnnouncement({
       content: 'Black Friday sale - 40% off all plans!',
       variant: 'tip',
       link: { text: 'Shop Now', href: '/pricing' },
-      startDate: '2025-11-24',
-      endDate: '2025-11-30',
+      startDate: '2026-11-24',
+      endDate: '2026-11-30',
     },
     // Until API v1 is deprecated
     {
@@ -114,27 +126,19 @@ starlightAnnouncement({
       content: 'API v1 will be deprecated on March 1st.',
       variant: 'caution',
       link: { text: 'Migration Guide', href: '/guides/v2-migration' },
-      endDate: '2025-03-01',
+      endDate: '2026-03-01',
     },
     // After new feature launches
     {
       id: 'new-feature',
       content: 'New dashboard is now available!',
       variant: 'note',
-      startDate: '2025-02-15',
+      startDate: '2026-02-15',
     },
   ],
 })
 ```
 
-## Testing Scheduled Announcements
-
-To test scheduled announcements during development:
-
-1. Set dates in the past/future temporarily
-2. Check the browser console for any date-related filtering
-3. Use your system clock to verify date boundaries
-
 ---
 
-See [Announcement Options](/guides/announcements/) for detailed documentation on scheduling.
+See [Announcement Options](/starlight-announcement/guides/announcements/) for detailed documentation on scheduling.

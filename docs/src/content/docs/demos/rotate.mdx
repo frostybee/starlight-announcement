@@ -1,0 +1,101 @@
+---
+title: Rotate Mode Demo
+description: Live demo of rotate display mode with progress indicator
+---
+
+This page demonstrates the **rotate display mode** with the progress indicator. Look at the top of this page to see it in action!
+
+## What You're Seeing
+
+The announcements at the top of this page are cycling automatically every 5 seconds. Notice:
+
+1. **Dot indicators** below the banner showing your position
+2. **Click any dot** to jump directly to that announcement
+3. **Keyboard navigation:** Tab to the dots, then use arrow keys
+4. **Auto-rotation resets** when you manually navigate
+
+## Configuration
+
+This demo uses the following configuration:
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  rotateInterval: 5000, // 5 seconds
+  showRotateIndicator: true, // Show navigation dots (default)
+  announcements: [
+    {
+      id: 'rotate-demo-1',
+      content: 'First announcement - Watch the dots below!',
+      variant: 'tip',
+      showOn: ['/demos/rotate/'],
+    },
+    {
+      id: 'rotate-demo-2',
+      content: 'Second announcement - Click a dot to jump here!',
+      variant: 'note',
+      showOn: ['/demos/rotate/'],
+    },
+    {
+      id: 'rotate-demo-3',
+      content: 'Third announcement - Try keyboard navigation!',
+      variant: 'caution',
+      showOn: ['/demos/rotate/'],
+    },
+  ],
+})
+```
+
+## Progress Indicator Features
+
+| Feature | Description |
+|---------|-------------|
+| Visual feedback | Dots show which announcement is currently displayed |
+| Click navigation | Click any dot to jump to that announcement |
+| Keyboard support | Arrow keys navigate when dots are focused |
+| Auto-hide | Indicator disappears if only 1 announcement remains |
+| Dismiss handling | Dots update when announcements are dismissed |
+
+## Try It
+
+- **Watch** the announcements cycle automatically
+- **Click** the dots to jump to specific announcements
+- **Dismiss** announcements to see the indicator update
+- **Tab** to the dots and use arrow keys to navigate
+
+## Disabling the Indicator
+
+If you prefer rotate mode without the dots:
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  showRotateIndicator: false, // Hide the dots
+})
+```
+
+## Customizing the Indicator
+
+Style the indicator with CSS:
+
+```css
+/* Custom dot colors */
+.sl-rotate-dot {
+  background: var(--sl-color-gray-4);
+}
+
+.sl-rotate-dot--active {
+  background: var(--sl-color-green);
+}
+
+/* Pill-shaped indicators */
+.sl-rotate-dot {
+  width: 16px;
+  height: 4px;
+  border-radius: 2px;
+}
+```
+
+---
+
+See [Display Modes](/starlight-announcement/guides/display-modes/) for detailed documentation.

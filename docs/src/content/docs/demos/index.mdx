@@ -3,45 +3,132 @@ title: Live Demos
 description: Live demos showcasing all announcement features and configurations
 ---
 
-Explore live demos of all announcement features. Each demo page displays real announcements configured specifically for that page using the `showOn` targeting option.
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
+
+Explore live demos of all announcement features. Each demo page displays real announcements configured specifically for that page, so you can see the plugin in action with real configurations.
 
 ## Available Demos
 
-| Demo | Description |
-|------|-------------|
-| [Variants](/demos/variants/) | All four visual variants: note, tip, caution, danger |
-| [Links & CTAs](/demos/links/) | Announcements with call-to-action buttons |
-| [Dismissible](/demos/dismissible/) | Dismissible vs non-dismissible announcements |
-| [Display Modes](/demos/display-modes/) | Stack, first, and rotate display modes |
-| [Scheduling](/demos/scheduling/) | Time-based announcement visibility |
+<CardGrid>
+  <LinkCard
+    title="Variants"
+    description="See all four visual styles: note (blue), tip (green), caution (orange), and danger (red)."
+    href="/starlight-announcement/demos/variants/"
+  />
+  <LinkCard
+    title="Links & CTAs"
+    description="Announcements with call-to-action buttons linking to internal and external pages."
+    href="/starlight-announcement/demos/links/"
+  />
+  <LinkCard
+    title="Dismissible"
+    description="Compare dismissible announcements with non-dismissible critical alerts."
+    href="/starlight-announcement/demos/dismissible/"
+  />
+  <LinkCard
+    title="Display Modes"
+    description="Stack multiple banners, show only the first, or rotate through them."
+    href="/starlight-announcement/demos/display-modes/"
+  />
+  <LinkCard
+    title="Rotate Mode"
+    description="See the rotate carousel with clickable dot indicators in action."
+    href="/starlight-announcement/demos/rotate/"
+  />
+  <LinkCard
+    title="Scheduling"
+    description="Time-based visibility using start and end dates."
+    href="/starlight-announcement/demos/scheduling/"
+  />
+</CardGrid>
 
-## How These Demos Work
+## Quick Preview
 
-Each demo page has announcements specifically targeted to it using the `showOn` option. For example, the variants demo page only shows variant-related announcements:
+Here's a taste of the configurations used in each demo:
+
+### Variants
+
+Four visual styles matching Starlight's aside colors:
+
+```js
+{ id: 'note', content: 'General information', variant: 'note' }
+{ id: 'tip', content: 'Helpful tips', variant: 'tip' }
+{ id: 'caution', content: 'Warning notice', variant: 'caution' }
+{ id: 'danger', content: 'Critical alert', variant: 'danger' }
+```
+
+### Links & CTAs
+
+Add call-to-action buttons to drive user engagement:
 
 ```js
 {
-  id: 'demo-note',
-  content: 'This is a note variant announcement.',
-  variant: 'note',
-  showOn: ['/demos/variants/'],
+  id: 'with-link',
+  content: 'New documentation available!',
+  link: {
+    text: 'Read the docs',
+    href: '/getting-started/',
+  },
 }
 ```
 
-This lets you see announcements in action with real configurations rather than static screenshots.
+### Dismissible
 
-## Try It Yourself
+Control whether users can dismiss announcements:
 
-The announcements on these pages are fully functional:
+```js
+// User can dismiss (default)
+{ id: 'dismissible', content: '...', dismissible: true }
 
-- **Dismiss** announcements using the close button (refresh to see them again after clearing localStorage)
-- **Click links** to navigate to referenced pages
-- **Watch rotation** on the display modes demo
+// Cannot be dismissed - always visible
+{ id: 'critical', content: '...', dismissible: false }
+```
+
+### Display Modes
+
+Control how multiple announcements appear:
+
+```js
+starlightAnnouncement({
+  displayMode: 'stack',   // Show all (default)
+  displayMode: 'first',   // Show only first match
+  displayMode: 'rotate',  // Cycle through with animation
+  rotateInterval: 5000,   // 5 seconds between transitions
+})
+```
+
+### Scheduling
+
+Show announcements only during specific time periods:
+
+```js
+{
+  id: 'event',
+  content: 'Conference starts tomorrow!',
+  startDate: '2026-03-01',
+  endDate: '2026-03-15',
+}
+```
+
+## How These Demos Work
+
+Each demo page has announcements targeted using the `showOn` option. This lets you see specific features in isolation:
+
+```js
+{
+  id: 'demo-variant-note',
+  content: 'This is a note variant.',
+  variant: 'note',
+  showOn: ['/demos/variants/', '/demos/variants/**'],
+}
+```
+
+The announcements are fully functional - you can dismiss them, click links, and watch rotations. To reset dismissed announcements, clear the `starlight-announcements-dismissed` key from your browser's localStorage.
 
 ## Configuration Reference
 
 For detailed documentation on all options, see:
 
-- [Configuration Options](/guides/configuration/) - Plugin-level settings
-- [Announcement Options](/guides/announcements/) - Individual announcement settings
-- [Display Modes](/guides/display-modes/) - How multiple announcements are shown
+- [Announcement Options](/starlight-announcement/guides/announcements/): Variants, scheduling, and targeting
+- [Display Modes](/starlight-announcement/guides/display-modes/): Stack, first, or rotate modes
+- [Configuration](/starlight-announcement/guides/configuration/): All plugin-level settings

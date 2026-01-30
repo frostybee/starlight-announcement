@@ -9,8 +9,8 @@ interface Props {
 const { announcement } = Astro.props;
 const { id, content, link, variant, dismissible } = announcement;
 
-// Get locales
-const locale = Astro.locals.locale;
+// Get locales from Starlight route data
+const locale = Astro.locals.starlightRoute?.lang;
 const defaultLocale = getDefaultLocale();
 
 // Resolve localized content
@@ -19,8 +19,10 @@ const resolvedLinkText = link
   ? resolveLocalizedString(link.text, locale, defaultLocale)
   : undefined;
 
-const dismissLabel = Astro.locals.t('starlightAnnouncement.dismiss');
-const learnMoreLabel = Astro.locals.t('starlightAnnouncement.learnMore');
+// Get translations with fallbacks in case t() is unavailable
+const t = Astro.locals.t ?? ((key: string) => key.split('.').pop() ?? key);
+const dismissLabel = t('starlightAnnouncement.dismiss');
+const learnMoreLabel = t('starlightAnnouncement.learnMore');
 
 // Variant icons (Lucide-style)
 const icons = {
@@ -56,9 +58,8 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
       <Fragment set:html={iconPath} />
     </svg>
     <div class="sl-announcement-content">
-      {/* Security note: Content is rendered as HTML to support rich formatting (links, bold, etc.).
-          Ensure announcement content comes from trusted sources only (e.g., your config file).
-          Do not use this with untrusted user input or external data sources. */}
+      {/* Content is rendered as HTML to support rich formatting (links, bold, etc.).
+          This is safe because content comes from your own config file, not external input. */}
       <span class="sl-announcement-text" set:html={resolvedContent} />
       {link && (
         <a href={link.href} class="sl-announcement-link">
@@ -99,24 +100,25 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
 
 <style>
   .sl-announcement {
-    --_bg: var(--sl-color-blue-low);
-    --_border: var(--sl-color-blue);
-    --_accent: var(--sl-color-blue-high);
-    --_icon: var(--sl-color-blue);
+    --sl-announcement-bg: var(--sl-color-blue-low);
+    --sl-announcement-border: var(--sl-color-blue);
+    --sl-announcement-accent: var(--sl-color-blue-high);
+    --sl-announcement-icon: var(--sl-color-blue);
+    --sl-announcement-padding-y: 0.625rem;
 
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.625rem 1rem;
+    padding: var(--sl-announcement-padding-y) 1rem;
     background: linear-gradient(
       135deg,
-      var(--_bg) 0%,
-      color-mix(in srgb, var(--_bg) 85%, transparent) 100%
+      var(--sl-announcement-bg) 0%,
+      color-mix(in srgb, var(--sl-announcement-bg) 85%, transparent) 100%
     );
-    border-bottom: 1px solid color-mix(in srgb, var(--_border) 40%, transparent);
-    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--_border) 15%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--sl-announcement-border) 40%, transparent);
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--sl-announcement-border) 15%, transparent);
   }
 
   /* Left accent bar */
@@ -127,29 +129,29 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
     top: 0;
     bottom: 0;
     width: 3px;
-    background: var(--_border);
+    background: var(--sl-announcement-border);
     opacity: 0.9;
   }
 
   .sl-announcement[data-variant='tip'] {
-    --_bg: var(--sl-color-green-low);
-    --_border: var(--sl-color-green);
-    --_accent: var(--sl-color-green-high);
-    --_icon: var(--sl-color-green);
+    --sl-announcement-bg: var(--sl-color-green-low);
+    --sl-announcement-border: var(--sl-color-green);
+    --sl-announcement-accent: var(--sl-color-green-high);
+    --sl-announcement-icon: var(--sl-color-green);
   }
 
   .sl-announcement[data-variant='caution'] {
-    --_bg: var(--sl-color-orange-low);
-    --_border: var(--sl-color-orange);
-    --_accent: var(--sl-color-orange-high);
-    --_icon: var(--sl-color-orange);
+    --sl-announcement-bg: var(--sl-color-orange-low);
+    --sl-announcement-border: var(--sl-color-orange);
+    --sl-announcement-accent: var(--sl-color-orange-high);
+    --sl-announcement-icon: var(--sl-color-orange);
   }
 
   .sl-announcement[data-variant='danger'] {
-    --_bg: var(--sl-color-red-low);
-    --_border: var(--sl-color-red);
-    --_accent: var(--sl-color-red-high);
-    --_icon: var(--sl-color-red);
+    --sl-announcement-bg: var(--sl-color-red-low);
+    --sl-announcement-border: var(--sl-color-red);
+    --sl-announcement-accent: var(--sl-color-red-high);
+    --sl-announcement-icon: var(--sl-color-red);
   }
 
   .sl-announcement-inner {
@@ -163,7 +165,7 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
 
   .sl-announcement-icon {
     flex-shrink: 0;
-    color: var(--_icon);
+    color: var(--sl-announcement-icon);
     opacity: 0.9;
   }
 
@@ -187,8 +189,8 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
     gap: 0.25rem;
     padding: 0.125rem 0.5rem;
     border-radius: 1rem;
-    background: color-mix(in srgb, var(--_border) 25%, transparent);
-    color: var(--_accent);
+    background: color-mix(in srgb, var(--sl-announcement-border) 25%, transparent);
+    color: var(--sl-announcement-accent);
     font-size: var(--sl-text-xs);
     font-weight: 600;
     text-decoration: none;
@@ -201,7 +203,7 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
   }
 
   .sl-announcement-link:hover {
-    background: color-mix(in srgb, var(--_border) 40%, transparent);
+    background: color-mix(in srgb, var(--sl-announcement-border) 40%, transparent);
     color: var(--sl-color-white);
   }
 
@@ -227,11 +229,11 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
 
   .sl-announcement-dismiss:hover {
     color: var(--sl-color-white);
-    background: color-mix(in srgb, var(--_border) 50%, transparent);
+    background: color-mix(in srgb, var(--sl-announcement-border) 50%, transparent);
   }
 
   .sl-announcement-dismiss:focus-visible {
-    outline: 2px solid var(--_accent);
+    outline: 2px solid var(--sl-announcement-accent);
     outline-offset: 2px;
   }
 

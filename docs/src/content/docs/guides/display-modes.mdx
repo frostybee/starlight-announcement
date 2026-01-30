@@ -55,6 +55,25 @@ Use this to display multiple announcements without stacking them. Good for promo
 
 <DisplayModesDemo mode="rotate" />
 
+#### Progress Indicator
+
+When rotate mode is active with 2+ announcements, a dot indicator appears below the banner. This provides:
+
+- **Visual feedback:** See which announcement is currently displayed
+- **Manual navigation:** Click any dot to jump directly to that announcement
+- **Keyboard support:** Use arrow keys when focused on the dots
+
+The indicator automatically updates when announcements are dismissed. If only one announcement remains, the indicator hides.
+
+To disable the indicator:
+
+```js
+starlightAnnouncement({
+  displayMode: 'rotate',
+  showRotateIndicator: false,
+})
+```
+
 ## Configuration Examples
 
 ### Prioritized Announcements
@@ -181,5 +200,6 @@ With `first` mode above:
 
 ## Next Steps
 
-- [Announcement Options](/guides/announcements/) - Configure individual announcements
-- [Configuration](/guides/configuration/) - All plugin options
+- [Announcement Options](/starlight-announcement/guides/announcements/): Configure individual announcements
+- [Internationalization](/starlight-announcement/guides/internationalization/): Localized content for multilingual sites
+- [Custom Styling](/starlight-announcement/guides/custom-styling/): Customize appearance with CSS

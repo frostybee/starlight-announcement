@@ -17,10 +17,10 @@ editUrl: false
 hero:
   tagline: Enhanced announcement banners with dismissibility, variants, scheduling, and page targeting for your Starlight docs.
   image:
-    html: '📢'
+    file: ../../assets/mic.svg
   actions:
     - text: Get Started
-      link: /getting-started/
+      link: /starlight-announcement/getting-started/
       icon: rocket
     - text: Star on GitHub
       link: https://github.com/frostybee/starlight-announcement
@@ -35,7 +35,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
 
 <CardGrid>
   <Card title="Dismissible Banners" icon="close">
-    Users can dismiss announcements with a close button. Dismissed state persists in localStorage.
+    Users can dismiss announcements with a close button. Dismissed state persists in localStorage across sessions.
   </Card>
   <Card title="Multiple Variants" icon="information">
     Choose from `note`, `tip`, `caution`, or `danger` variants matching Starlight's aside styles.
@@ -46,21 +46,33 @@ import { Card, CardGrid } from '@astrojs/starlight/components'
   <Card title="Page Targeting" icon="document">
     Use glob patterns with `showOn` and `hideOn` to control which pages display each announcement.
   </Card>
+  <Card title="Display Modes" icon="bars">
+    Stack multiple announcements, show only the first match, or rotate through them with smooth transitions.
+  </Card>
+  <Card title="Internationalization" icon="translate">
+    Built-in translations for multiple languages plus support for localized announcement content.
+  </Card>
+  <Card title="Rich Content" icon="pencil">
+    Use HTML in announcement content for bold text, links, and other formatting.
+  </Card>
+  <Card title="CSS Customization" icon="seti:css">
+    Fully customizable via CSS variables and selectors. Create custom color themes with ease.
+  </Card>
 </CardGrid>
 
-## Next steps
+## Next Steps
 
 <CardGrid stagger>
   <Card title="Install the plugin" icon="puzzle">
-    Check the [getting started guide](/getting-started/) for installation instructions.
+    Check the [getting started guide](/starlight-announcement/getting-started/) for installation instructions.
   </Card>
   <Card title="Why this plugin?" icon="information">
-    See how it [compares to Starlight's built-in Banner](/guides/comparison/) component.
+    See how it [compares to Starlight's built-in Banner](/starlight-announcement/guides/comparison/) component.
   </Card>
   <Card title="Configure announcements" icon="setting">
-    Learn how to [configure announcements](/guides/configuration/) with variants, scheduling, and targeting.
+    Learn how to [configure announcements](/starlight-announcement/guides/configuration/) with variants, scheduling, and targeting.
   </Card>
-  <Card title="Display modes" icon="bars">
-    Explore [display modes](/guides/display-modes/) to control how multiple announcements are shown.
+  <Card title="Live demos" icon="rocket">
+    See the plugin in action with [interactive demos](/starlight-announcement/demos/) showcasing all features.
   </Card>
 </CardGrid>

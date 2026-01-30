@@ -11,6 +11,10 @@
     "./components/AnnouncementBanner.astro": "./src/components/AnnouncementBanner.astro",
     "./components/AnnouncementItem.astro": "./src/components/AnnouncementItem.astro"
   },
+  "files": [
+    "index.ts",
+    "src/"
+  ],
   "dependencies": {
     "picomatch": "^4.0.2"
   },
@@ -34,5 +38,14 @@
     "url": "https://github.com/frostybee/starlight-announcement.git",
     "directory": "packages/starlight-announcement"
   },
-  "bugs": "https://github.com/frostybee/starlight-announcement/issues"
+  "bugs": "https://github.com/frostybee/starlight-announcement/issues",
+  "keywords": [
+    "starlight",
+    "starlight-plugin",
+    "astro",
+    "announcement",
+    "banner",
+    "notification",
+    "withastro"
+  ]
 }

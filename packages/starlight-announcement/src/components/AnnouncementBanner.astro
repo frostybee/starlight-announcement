@@ -59,8 +59,8 @@ const total = activeAnnouncements.length;
     data-announcement-rotate={isRotateMode ? '' : undefined}
     data-rotate-interval={isRotateMode ? rotateInterval : undefined}
   >
-    {activeAnnouncements.map((ann) => (
-      <AnnouncementItem announcement={ann} />
+    {activeAnnouncements.map((ann, i) => (
+      <AnnouncementItem announcement={ann} initiallyHidden={isRotateMode && i > 0} />
     ))}
     {showIndicator && (
       <nav

@@ -4,9 +4,10 @@ import { resolveLocalizedString, getDefaultLocale } from '../libs/i18n';
 
 interface Props {
   announcement: AnnouncementConfig;
+  initiallyHidden?: boolean;
 }
 
-const { announcement } = Astro.props;
+const { announcement, initiallyHidden } = Astro.props;
 const { id, content, link, variant, dismissible } = announcement;
 
 // Get locales from Starlight route data
@@ -41,6 +42,8 @@ const iconPath = icons[variant as keyof typeof icons] || icons.note;
   data-variant={variant}
   role="status"
   aria-live="polite"
+  style={initiallyHidden ? 'display:none' : undefined}
+  aria-hidden={initiallyHidden ? 'true' : undefined}
 >
   <div class="sl-announcement-inner">
     <svg

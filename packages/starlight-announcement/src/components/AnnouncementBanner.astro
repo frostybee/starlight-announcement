@@ -310,7 +310,7 @@ const total = activeAnnouncements.length;
   }
 
   // Clean up interval and event listeners before Astro view transitions swap content
-  document.addEventListener('astro:before-swap', (e) => {
+  document.addEventListener('astro:before-swap', () => {
     if (rotationInterval) {
       clearInterval(rotationInterval);
       rotationInterval = undefined;
@@ -319,12 +319,15 @@ const total = activeAnnouncements.length;
       rotationAbortController.abort();
       rotationAbortController = undefined;
     }
-    // Hide announcements in the incoming page to prevent content flash during transition
-    const newContainer = (e as any).newDocument?.querySelector<HTMLElement>(
-      '.sl-announcements-container',
-    );
-    if (newContainer) {
-      newContainer.setAttribute('data-sl-transitioning', '');
+    // Reset announcements to initial state so cached DOM is clean on back navigation
+    const container = document.querySelector<HTMLElement>('[data-announcement-rotate]');
+    if (container) {
+      const items = container.querySelectorAll<HTMLElement>('.sl-announcement');
+      items.forEach((item, i) => {
+        item.style.display = i === 0 ? '' : 'none';
+        item.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+      });
+      container.classList.remove('sl-rotation-initialized');
     }
   });
 
@@ -336,11 +339,6 @@ const total = activeAnnouncements.length;
   document.addEventListener('astro:page-load', () => {
     initDismissals();
     initRotation();
-    // Reveal announcements now that they are properly initialized (prevents content flash)
-    const container = document.querySelector<HTMLElement>('.sl-announcements-container');
-    if (container) {
-      container.removeAttribute('data-sl-transitioning');
-    }
   });
 </script>
 
@@ -351,21 +349,6 @@ const total = activeAnnouncements.length;
 
   .sl-announcements-container[data-announcement-rotate] {
     display: block;
-  }
-
-  /* Hide announcements during view transitions to prevent content flash on navigation.
-     Uses :global() to target children because display:contents elements have no box for opacity. */
-  .sl-announcements-container[data-sl-transitioning] :global(.sl-announcement) {
-    opacity: 0;
-  }
-
-  .sl-announcements-container[data-sl-transitioning] :global(.sl-rotate-indicator) {
-    opacity: 0;
-  }
-
-  /* In rotate mode the container generates a box, so we can hide it directly. */
-  .sl-announcements-container[data-announcement-rotate][data-sl-transitioning] {
-    opacity: 0;
   }
 
   /* Hide non-first announcements immediately in rotate mode to prevent layout shift.

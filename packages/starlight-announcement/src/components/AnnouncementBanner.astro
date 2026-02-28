@@ -161,9 +161,6 @@ const total = activeAnnouncements.length;
     const container = document.querySelector<HTMLElement>('[data-announcement-rotate]');
     if (!container) return;
 
-    // Mark as initialized so CSS hands off control to JS
-    container.classList.add('sl-rotation-initialized');
-
     const allItems = container.querySelectorAll<HTMLElement>('.sl-announcement');
     const allDots = container.querySelectorAll<HTMLElement>('.sl-rotate-dot');
     const indicator = container.querySelector<HTMLElement>('.sl-rotate-indicator');
@@ -182,6 +179,8 @@ const total = activeAnnouncements.length;
         item.style.display = '';
         item.setAttribute('aria-hidden', 'false');
       });
+      // Mark as initialized so CSS hands off control to JS (after inline styles are set)
+      container.classList.add('sl-rotation-initialized');
       return;
     }
 
@@ -305,6 +304,8 @@ const total = activeAnnouncements.length;
     }, { signal });
 
     showItem(0);
+    // Mark as initialized so CSS hands off control to JS (after inline styles are set)
+    container.classList.add('sl-rotation-initialized');
     startInterval();
   }
 

@@ -331,6 +331,32 @@ const total = activeAnnouncements.length;
     }
   });
 
+  // Reset rotation state after Astro swaps in cached DOM on back/forward navigation.
+  // astro:before-swap resets the outgoing page but cannot fix the incoming cached content.
+  // astro:after-swap fires right after the swap, before the browser paints.
+  document.addEventListener('astro:after-swap', () => {
+    const container = document.querySelector<HTMLElement>('[data-announcement-rotate]');
+    if (!container) return;
+
+    const items = container.querySelectorAll<HTMLElement>('.sl-announcement');
+    items.forEach((item, i) => {
+      item.style.display = i === 0 ? '' : 'none';
+      item.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+    });
+
+    const dots = container.querySelectorAll<HTMLElement>('.sl-rotate-dot');
+    dots.forEach((dot, i) => {
+      dot.style.display = '';
+      dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      dot.classList.toggle('sl-rotate-dot--active', i === 0);
+    });
+
+    const indicator = container.querySelector<HTMLElement>('.sl-rotate-indicator');
+    if (indicator) indicator.style.display = '';
+
+    container.classList.remove('sl-rotation-initialized');
+  });
+
   // Initialize on page load
   initDismissals();
   initRotation();

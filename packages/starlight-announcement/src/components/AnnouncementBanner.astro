@@ -309,6 +309,29 @@ const total = activeAnnouncements.length;
     startInterval();
   }
 
+  // Reset rotation state before Astro starts the view transition.
+  // astro:before-preparation fires before document.startViewTransition() is called, so the
+  // browser captures a clean old-state screenshot (item 0 visible) for the transition animation.
+  // Without this, the screenshot captures the stale rotation state, causing a flash on navigation.
+  document.addEventListener('astro:before-preparation', () => {
+    if (rotationInterval) {
+      clearInterval(rotationInterval);
+      rotationInterval = undefined;
+    }
+    if (rotationAbortController) {
+      rotationAbortController.abort();
+      rotationAbortController = undefined;
+    }
+    const container = document.querySelector<HTMLElement>('[data-announcement-rotate]');
+    if (!container) return;
+    const items = container.querySelectorAll<HTMLElement>('.sl-announcement');
+    items.forEach((item, i) => {
+      item.style.display = i === 0 ? '' : 'none';
+      item.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+    });
+    container.classList.remove('sl-rotation-initialized');
+  });
+
   // Clean up interval and event listeners before Astro view transitions swap content
   document.addEventListener('astro:before-swap', () => {
     if (rotationInterval) {

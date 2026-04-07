@@ -1,5 +1,11 @@
 # starlight-announcement
 
+## 1.0.0
+
+### Major Changes
+
+- f00adb9: Upgrade to Astro 6 and Starlight 0.38.1
+
 ## 0.1.1
 
 ### Patch Changes

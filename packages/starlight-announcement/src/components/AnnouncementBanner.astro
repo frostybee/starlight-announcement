@@ -30,8 +30,9 @@ const total = activeAnnouncements.length;
 <!-- Inline script to hide dismissed announcements before render (prevents flash) -->
 <script is:inline data-starlight-announcement-init>
   (function() {
+    var dismissed = [];
     try {
-      var dismissed = JSON.parse(localStorage.getItem('starlight-announcements-dismissed') || '[]');
+      dismissed = JSON.parse(localStorage.getItem('starlight-announcements-dismissed') || '[]');
       if (dismissed.length) {
         var style = document.createElement('style');
         style.id = 'starlight-announcement-dismissed-styles';
@@ -42,6 +43,42 @@ const total = activeAnnouncements.length;
           }).join('');
         document.head.appendChild(style);
       }
+    } catch (e) {
+      // localStorage may be unavailable
+    }
+    
+    // Restore rotation state from localStorage before render to prevent flash
+    try {
+      var state = JSON.parse(localStorage.getItem('starlight-announcements-rotation') || '{}');
+      var container = document.querySelector('[data-announcement-rotate]');
+      if (!container || !state || state.index === undefined) return;
+      
+      var items = container.querySelectorAll('.sl-announcement');
+      var visibleItems = Array.from(items).filter(function(item) {
+        var id = item.dataset.announcementId;
+        return id && dismissed.indexOf(id) === -1;
+      });
+      
+      // Don't apply rotation state if only 1 item visible
+      if (visibleItems.length <= 1) return;
+      
+      // Clamp index to valid range
+      var index = state.index;
+      if (index < 0) index = 0;
+      if (index >= visibleItems.length) index = 0;
+      
+      items.forEach(function(item, i) {
+        item.style.display = i === index ? '' : 'none';
+        item.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+      });
+      
+      var dots = container.querySelectorAll('.sl-rotate-dot');
+      dots.forEach(function(dot, i) {
+        dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
+        dot.classList.toggle('sl-rotate-dot--active', i === index);
+      });
+      
+      container.classList.add('sl-rotation-initialized');
     } catch (e) {
       // localStorage may be unavailable
     }
@@ -87,6 +124,7 @@ const total = activeAnnouncements.length;
 
 <script>
   const STORAGE_KEY = 'starlight-announcements-dismissed';
+  const ROTATION_STATE_KEY = 'starlight-announcements-rotation';
 
   // Track rotation interval and event listeners for cleanup
   let rotationInterval: number | undefined;
@@ -127,6 +165,31 @@ const total = activeAnnouncements.length;
       .filter((id) => typeof id === 'string' && /^[\w-]+$/.test(id))
       .map((id) => `[data-announcement-id="${id}"] { display: none !important; }`)
       .join('');
+  }
+
+  function saveRotationState(index: number) {
+    try {
+      localStorage.setItem(ROTATION_STATE_KEY, JSON.stringify({ index }));
+    } catch {
+      // localStorage may be unavailable
+    }
+  }
+
+  function clearRotationState() {
+    try {
+      localStorage.removeItem(ROTATION_STATE_KEY);
+    } catch {
+      // localStorage may be unavailable
+    }
+  }
+
+  function getSavedRotationIndex(): number {
+    try {
+      const state = JSON.parse(localStorage.getItem(ROTATION_STATE_KEY) || '{}');
+      return typeof state.index === 'number' ? state.index : 0;
+    } catch {
+      return 0;
+    }
   }
 
   function initDismissals() {
@@ -179,6 +242,8 @@ const total = activeAnnouncements.length;
         item.style.display = '';
         item.setAttribute('aria-hidden', 'false');
       });
+      // Clear rotation state since rotation is disabled
+      clearRotationState();
       // Mark as initialized so CSS hands off control to JS (after inline styles are set)
       container.classList.add('sl-rotation-initialized');
       return;
@@ -198,6 +263,8 @@ const total = activeAnnouncements.length;
       if (index < 0) index = visibleItems.length - 1;
       if (index >= visibleItems.length) index = 0;
       current = index;
+
+      saveRotationState(current);
 
       const visibleIds = visibleItems.map((item) => item.dataset.announcementId);
       allItems.forEach((item) => {
@@ -303,7 +370,8 @@ const total = activeAnnouncements.length;
       }
     }, { signal });
 
-    showItem(0);
+    const initialIndex = getSavedRotationIndex();
+    showItem(initialIndex);
     // Mark as initialized so CSS hands off control to JS (after inline styles are set)
     container.classList.add('sl-rotation-initialized');
     startInterval();

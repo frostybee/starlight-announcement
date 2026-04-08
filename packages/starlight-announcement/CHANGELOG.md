@@ -1,5 +1,11 @@
 # starlight-announcement
 
+## 1.1.0
+
+### Minor Changes
+
+- 35698e2: Add svgPath and iconSize options for icon customization (#4)
+
 ## 1.0.0
 
 ### Major Changes

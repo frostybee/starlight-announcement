@@ -87,6 +87,35 @@ The visual style of the announcement. These match Starlight's [aside styles](htt
 }
 ```
 
+### `svgPath`
+
+- **Type:** `string`
+- **Default:** `undefined`
+
+Overrides the default variant icon. Accepts the `d` attribute value of an SVG `<path>` element (the same format used by the [`svgPath` option in starlight-scroll-to-top](https://frostybee.github.io/starlight-scroll-to-top/svg-paths/)).
+
+Set to `'none'` to hide the icon entirely without touching CSS.
+
+```js
+// Hide the icon
+{
+  id: 'no-icon',
+  content: 'An announcement without an icon.',
+  svgPath: 'none',
+}
+
+// Custom chevron icon
+{
+  id: 'custom-icon',
+  content: 'An announcement with a custom icon.',
+  svgPath: 'M18 15l-6-6-6 6',
+}
+```
+
+:::tip
+If you omit `svgPath`, the default icon for the selected `variant` is used automatically.
+:::
+
 ### `link`
 
 - **Type:** `{ text: string | Record<string, string>; href: string }`

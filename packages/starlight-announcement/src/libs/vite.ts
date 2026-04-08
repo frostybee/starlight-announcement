@@ -9,6 +9,7 @@ export function vitePluginStarlightAnnouncement(config: PluginConfig): Plugin {
 export const displayMode = ${JSON.stringify(config.displayMode)};
 export const rotateInterval = ${JSON.stringify(config.rotateInterval)};
 export const showRotateIndicator = ${JSON.stringify(config.showRotateIndicator)};
+export const iconSize = ${JSON.stringify(config.iconSize)};
 export const announcements = ${JSON.stringify(config.announcements)};
 `;
 

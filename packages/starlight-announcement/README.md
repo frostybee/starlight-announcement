@@ -12,6 +12,7 @@
 - Schedule announcements with start and end dates,
 - Multiple display modes: static, closable, and rotating,
 - Fully customizable theming with built-in and custom styles,
+- Per-announcement icon override via SVG path, or hide the icon entirely,
 - Internationalization (i18n) support for localized content,
 - Accessible components with proper ARIA attributes,
 - Works seamlessly with Starlight's existing configuration.

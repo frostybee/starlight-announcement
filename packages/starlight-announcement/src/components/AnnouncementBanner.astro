@@ -1,6 +1,6 @@
 ---
 import StarlightBanner from '@astrojs/starlight/components/Banner.astro';
-import { announcements, displayMode, rotateInterval, showRotateIndicator } from 'virtual:starlight-announcement/config';
+import { announcements, displayMode, rotateInterval, showRotateIndicator, iconSize } from 'virtual:starlight-announcement/config';
 import { getActiveAnnouncements } from '../libs/utils';
 import AnnouncementItem from './AnnouncementItem.astro';
 
@@ -97,7 +97,7 @@ const total = activeAnnouncements.length;
     data-rotate-interval={isRotateMode ? rotateInterval : undefined}
   >
     {activeAnnouncements.map((ann, i) => (
-      <AnnouncementItem announcement={ann} initiallyHidden={isRotateMode && i > 0} />
+      <AnnouncementItem announcement={ann} iconSize={iconSize} initiallyHidden={isRotateMode && i > 0} />
     ))}
     {showIndicator && (
       <nav

@@ -58,6 +58,8 @@ const announcementSchema = z.object({
   link: linkSchema.optional(),
   /** Visual variant matching Starlight's aside styles */
   variant: z.enum(['note', 'tip', 'caution', 'danger']).default('note'),
+  /** SVG path `d` attribute value to override the variant icon, or 'none' to hide the icon. */
+  svgPath: z.string().optional(),
   /** Whether the announcement can be dismissed */
   dismissible: z.boolean().default(true),
   /** Start date for scheduled display (ISO 8601 format) */
@@ -82,6 +84,8 @@ export const pluginConfigSchema = z.object({
     .default(5000),
   /** Whether to show dot indicators in rotate mode */
   showRotateIndicator: z.boolean().default(true),
+  /** Icon size in pixels (applies to all announcement icons). Min: 12, Max: 48 */
+  iconSize: z.number().int().min(12, 'Icon size must be at least 12px').max(48, 'Icon size must be at most 48px').default(24),
   /** Array of announcement configurations */
   announcements: z.array(announcementSchema).default([]),
 }).superRefine((config, ctx) => {

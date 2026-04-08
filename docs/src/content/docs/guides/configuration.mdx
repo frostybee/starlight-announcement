@@ -98,6 +98,20 @@ starlightAnnouncement({
 })
 ```
 
+### `iconSize`
+
+- **Type:** `number`
+- **Default:** `24`
+- **Range:** `12` – `48`
+
+The size in pixels of the icon rendered in each announcement banner. Applies globally to all announcements.
+
+```js
+starlightAnnouncement({
+  iconSize: 32, // Larger icons
+})
+```
+
 ### `announcements`
 
 - **Type:** `Announcement[]`
@@ -110,6 +124,7 @@ Array of announcement objects. Each announcement has the following properties:
 | `id` | `string` | Yes | - | Unique identifier (used for dismissal persistence) |
 | `content` | `string \| Record<string, string>` | Yes | - | The announcement text (supports HTML and localization) |
 | `variant` | `string` | No | `'note'` | Visual style: `note`, `tip`, `caution`, `danger` |
+| `svgPath` | `string` | No | - | SVG path `d` value to override the icon, or `'none'` to hide it |
 | `dismissible` | `boolean` | No | `true` | Whether users can dismiss the announcement |
 | `link` | `object` | No | - | Optional CTA link with `text` (localizable) and `href` |
 | `startDate` | `string` | No | - | ISO date when announcement becomes visible |
@@ -133,6 +148,7 @@ export default defineConfig({
       plugins: [
         starlightAnnouncement({
           displayMode: 'stack',
+          iconSize: 24,
           announcements: [
             {
               id: 'v3-migration',
@@ -152,6 +168,7 @@ export default defineConfig({
               id: 'welcome',
               content: 'Welcome to our new documentation site!',
               variant: 'tip',
+              svgPath: 'M12 4L8 10H10V16H14V10H16L12 4M10 16L12 20L14 16',
               showOn: ['/'],
             },
           ],

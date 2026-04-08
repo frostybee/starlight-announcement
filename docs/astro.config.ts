@@ -31,6 +31,8 @@ export default defineConfig({
                 fr: 'Bienvenue dans le plugin starlight-announcement !',
               },
               variant: 'tip',
+              // Custom rocket icon (Classic Rocket Up)
+              svgPath: 'M12 4L8 10H10V16H14V10H16L12 4M10 16L12 20L14 16',
               link: {
                 text: {
                   en: 'Get Started',
@@ -113,6 +115,8 @@ export default defineConfig({
                 fr: 'Cette annonce n\'a pas de lien - juste du texte informatif.',
               },
               variant: 'caution',
+              // Hide the icon using svgPath: 'none'
+              svgPath: 'none',
               showOn: ['/demos/links', '/demos/links/**', '/fr/demos/links', '/fr/demos/links/**'],
             },
 

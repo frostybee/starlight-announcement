@@ -19,18 +19,19 @@
     "picomatch": "^4.0.2"
   },
   "devDependencies": {
-    "@astrojs/starlight": "^0.38.2",
+    "@astrojs/starlight": "^0.41.7",
     "@types/picomatch": "^3.0.1",
-    "astro": "^6.0.8"
+    "astro": "^7.2.4"
   },
   "peerDependencies": {
-    "@astrojs/starlight": ">=0.38.0"
+    "@astrojs/starlight": ">=0.41.0"
   },
   "engines": {
     "node": ">=22.12.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "homepage": "https://github.com/frostybee/starlight-announcement",
   "repository": {

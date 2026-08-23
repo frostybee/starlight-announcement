@@ -1,10 +1,17 @@
-<div align="center">
-  <h1>Starlight Announcement</h1>
-  <p>Add custom announcement banners to your Starlight docs with scheduling, theming, and i18n support.</p>
+<h1 align="center">Starlight Announcement</h1>
 
-  [![npm version](https://badge.fury.io/js/starlight-announcement.svg)](https://badge.fury.io/js/starlight-announcement)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-</div>
+<p align="center">
+  <a href="https://www.npmjs.com/package/starlight-announcement"><img src="https://img.shields.io/npm/v/starlight-announcement.svg" alt="npm version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+</p>
+
+<p align="center">
+  <a href="https://frostybee.github.io/starlight-announcement/"><strong>Documentation</strong></a> ·
+  <a href="https://frostybee.github.io/starlight-announcement/configuration/">Configuration</a> ·
+  <a href="https://github.com/frostybee/starlight-announcement/releases">Releases</a>
+</p>
+
+Add custom announcement banners to your Starlight docs with scheduling, theming, and i18n support.
 
 ## Features
 

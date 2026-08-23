@@ -235,9 +235,7 @@ export default defineConfig({
         },
         {
           label: 'Demos',
-          autogenerate: {
-            directory: 'demos/',
-          },
+          items: [{ autogenerate: { directory: 'demos/' } }],
         },
       ],
       social: [
